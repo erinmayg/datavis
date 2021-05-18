@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import './App.css';
 import * as XLSX from 'xlsx';
-import DFDRTable from './components/DFDRTable';
+import Select from 'react-select';
 import DFDRChart from './components/DFDRChart';
+import { ReactComponent as AddButton } from './svg/plus.svg';
 
 function App() {
   let filetypes = '.xls, .xlsx';
@@ -11,11 +12,9 @@ function App() {
   const [sheets, setSheets] = useState([]);
   const [selectedSheet, setSelectedSheet] = useState();
   const [cols, setCols] = useState([]);
-  const [selectedCol, setSelectedCol] = useState();
+  const [selectedCols, setSelectedCols] = useState([]);
   const [data, setData] = useState([]);
   const [time, setTime] = useState([]);
-  const [values, setValues] = useState([]);
-  const [zipped, setZipped] = useState([]);
 
   const readCols = (file) => {
     const promise = new Promise((resolve, reject) => {
@@ -79,18 +78,6 @@ function App() {
     });
   };
 
-  const readData = (col) => {
-    let values = [];
-    data.forEach((row) => {
-      values.push(row[col]);
-    });
-    setValues(values);
-    let zipped = [];
-    values.forEach((v, i) => zipped.push([time[i], v]));
-    setZipped(zipped);
-    console.log(zipped);
-  };
-
   return (
     <div className='App'>
       <h1>DFDR Data Visualisation</h1>
@@ -107,41 +94,45 @@ function App() {
         />
       </label>
       {sheets.length > 0 && (
-        <div>
+        <div className='flex'>
           <label>Choose sheet:</label>
-          <select
-            onChange={(e) => {
-              setSelectedSheet(e.target.value);
-              readSheet(e.target.value);
+          <Select
+            className='select'
+            placeholder='Sheet'
+            onChange={(selected) => {
+              setSelectedCols([]);
+              setSelectedSheet(selected.value);
+              readSheet(selected.value);
             }}
-          >
-            {sheets?.map((sheet, key) => (
-              <option key={key} value={sheet}>
-                {sheet}
-              </option>
-            ))}
-          </select>
+            options={sheets.map((sheet) => {
+              return { value: sheet, label: sheet };
+            })}
+          />
         </div>
       )}
-      {cols.length > 0 && (
+      {selectedSheet && cols.length > 0 && (
         <div>
           <label>Choose column:</label>
-          <select
-            onChange={(e) => {
-              setSelectedCol(e.target.value);
-              readData(e.target.value);
-            }}
-          >
-            {cols?.map((col, key) => (
-              <option key={key} value={col}>
-                {col}
-              </option>
-            ))}
-          </select>
+          <div className='flex'>
+            <Select
+              className='select'
+              placeholder='Column(s)'
+              isMulti={true}
+              isClearable={true}
+              onChange={(selected) => {
+                console.log(selected.map((opt) => opt.value));
+                setSelectedCols(selected.map((opt) => opt.value));
+              }}
+              options={cols.map((col) => {
+                return { value: col, label: col };
+              })}
+            />
+            <AddButton />
+          </div>
         </div>
       )}
-      {values.length > 0 && (
-        <DFDRChart time={time} values={values} column={selectedCol} />
+      {selectedCols.length > 0 && (
+        <DFDRChart time={time} data={data} columns={selectedCols} />
       )}
     </div>
   );
