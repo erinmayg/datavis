@@ -4,6 +4,7 @@ import * as XLSX from 'xlsx';
 import Select from 'react-select';
 import DFDRChart from './components/DFDRChart';
 import { ReactComponent as AddButton } from './svg/plus.svg';
+import { ReactComponent as RemoveButton } from './svg/remove.svg';
 
 function App() {
   let filetypes = '.xls, .xlsx';
@@ -12,7 +13,7 @@ function App() {
   const [sheets, setSheets] = useState([]);
   const [selectedSheet, setSelectedSheet] = useState();
   const [cols, setCols] = useState([]);
-  const [selectedCols, setSelectedCols] = useState([]);
+  const [selectedColsList, setSelectedColsList] = useState([[]]);
   const [data, setData] = useState([]);
   const [time, setTime] = useState([]);
 
@@ -78,6 +79,17 @@ function App() {
     });
   };
 
+  const addColumnsList = () => {
+    setSelectedColsList([...selectedColsList, []]);
+  };
+
+  const removeColumnsList = (i) => {
+    const list = [...selectedColsList];
+    list.splice(i, 1);
+    console.log(list);
+    setSelectedColsList(list);
+  };
+
   return (
     <div className='App'>
       <h1>DFDR Data Visualisation</h1>
@@ -100,7 +112,7 @@ function App() {
             className='select'
             placeholder='Sheet'
             onChange={(selected) => {
-              setSelectedCols([]);
+              setSelectedColsList([[]]);
               setSelectedSheet(selected.value);
               readSheet(selected.value);
             }}
@@ -113,26 +125,34 @@ function App() {
       {selectedSheet && cols.length > 0 && (
         <div>
           <label>Choose column:</label>
-          <div className='flex'>
-            <Select
-              className='select'
-              placeholder='Column(s)'
-              isMulti={true}
-              isClearable={true}
-              onChange={(selected) => {
-                console.log(selected.map((opt) => opt.value));
-                setSelectedCols(selected.map((opt) => opt.value));
-              }}
-              options={cols.map((col) => {
-                return { value: col, label: col };
-              })}
-            />
-            <AddButton />
-          </div>
+          {selectedColsList.map((x, i) => {
+            return (
+              <div className='flex' key={i}>
+                <Select
+                  key={i}
+                  className='select'
+                  placeholder='Column(s)'
+                  isMulti={true}
+                  isClearable={true}
+                  onChange={(selected) => {
+                    let selectedOpts = selected.map((opt) => opt.value);
+                    const colsList = [...selectedColsList];
+                    colsList[i] = selectedOpts;
+                    setSelectedColsList(colsList);
+                  }}
+                  options={cols.map((col) => {
+                    return { value: col, label: col };
+                  })}
+                />
+                <AddButton onClick={addColumnsList} />
+                {i !== 0 && <RemoveButton onClick={removeColumnsList} />}
+              </div>
+            );
+          })}
         </div>
       )}
-      {selectedCols.length > 0 && (
-        <DFDRChart time={time} data={data} columns={selectedCols} />
+      {selectedColsList[0].length > 0 && (
+        <DFDRChart time={time} data={data} columnsList={selectedColsList} />
       )}
     </div>
   );

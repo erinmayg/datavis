@@ -21,10 +21,11 @@ body {
 .button {
   width: 2rem;
   cursor: pointer;
+  color: grey;
 }
 
-.add {
-  color: grey;
+.remove:hover {
+  color: red;
 }
 
 .add:hover {

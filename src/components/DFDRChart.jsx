@@ -3,48 +3,67 @@ import Chart from 'react-apexcharts';
 import moment from 'moment';
 
 function DFDRChart(props) {
-  let series = props.columns.map((col) => {
+  let constructSeries = (columns) =>
+    columns.map((col) => {
+      return {
+        name: col,
+        data: props.time
+          .map((t, i) => [t, props.data[i][col]])
+          .filter((data) => !isNaN(data[1])),
+      };
+    });
+  const constructOptions = (id) => {
     return {
-      name: col,
-      data: props.time
-        .map((t, i) => [t, props.data[i][col]])
-        .filter((data) => !isNaN(data[1])),
-    };
-  });
-  let options = {
-    chart: {
-      id: 'dfdr',
-      type: 'line',
-      height: 160,
-    },
-    yaxis: {
-      labels: {
-        minWidth: 20,
+      chart: {
+        id: id,
+        group: 'dfdr',
+        type: 'line',
       },
-    },
-    xaxis: {
-      type: 'datetime',
-      labels: {
-        formatter: function (val, timestamp) {
-          return moment(new Date(timestamp)).format('HH:mm:ss');
+      yaxis: {
+        labels: {
+          minWidth: 20,
         },
       },
-    },
-    theme: {
-      palette: 'palette1',
-    },
-    dataLabels: {
-      enabled: false,
-      enabledOnSeries: [0],
-      formatter: function (val, opt) {
-        return props.data[opt.dataPointIndex]['Comments'];
+      xaxis: {
+        type: 'datetime',
+        labels: {
+          formatter: function (val, timestamp) {
+            return moment(new Date(timestamp)).format('HH:mm:ss');
+          },
+        },
       },
-    },
+      stroke: {
+        width: 1,
+      },
+      theme: {
+        palette: 'palette1',
+      },
+      dataLabels: {
+        enabled: false,
+        enabledOnSeries: [0],
+        formatter: function (val, opt) {
+          return props.data[opt.dataPointIndex]['Comments'];
+        },
+      },
+      markers: {
+        size: 2,
+        strokeWidth: 0,
+      },
+    };
   };
 
   return (
     <div>
-      <Chart options={options} series={series} type='line' height={500} />
+      {props.columnsList.map((columns, i) => {
+        return (
+          <Chart
+            key={i}
+            series={constructSeries(columns)}
+            options={constructOptions(i + 1)}
+            height={500 / props.columnsList.length}
+          />
+        );
+      })}
     </div>
   );
 }
