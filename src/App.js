@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './App.css';
+import './App.scss';
 import * as XLSX from 'xlsx';
 import Select from 'react-select';
 import DFDRChart from './components/DFDRChart';
@@ -92,65 +92,77 @@ function App() {
 
   return (
     <div className='App'>
-      <h1>DFDR Data Visualisation</h1>
-      <label>
-        Upload file ({filetypes}):
-        <input
-          type='file'
-          accept={filetypes}
-          onChange={(e) => {
-            let file = e.target.files[0];
-            setFile(file);
-            readCols(file);
-          }}
-        />
-      </label>
-      {sheets.length > 0 && (
-        <div className='flex'>
-          <label>Choose sheet:</label>
-          <Select
-            className='select'
-            placeholder='Sheet'
-            onChange={(selected) => {
-              setSelectedColsList([[]]);
-              setSelectedSheet(selected.value);
-              readSheet(selected.value);
+      <div className='title'>
+        <h1>DFDR Data Visualisation</h1>
+      </div>
+      <div className='form'>
+        <label className='file'>
+          <input
+            type='file'
+            id='file'
+            accept={filetypes}
+            onChange={(e) => {
+              let file = e.target.files[0];
+              setFile(file);
+              readCols(file);
             }}
-            options={sheets.map((sheet) => {
-              return { value: sheet, label: sheet };
-            })}
           />
-        </div>
-      )}
-      {selectedSheet && cols.length > 0 && (
-        <div>
-          <label>Choose column:</label>
-          {selectedColsList.map((x, i) => {
-            return (
-              <div className='flex' key={i}>
-                <Select
-                  key={i}
-                  className='select'
-                  placeholder='Column(s)'
-                  isMulti={true}
-                  isClearable={true}
-                  onChange={(selected) => {
-                    let selectedOpts = selected.map((opt) => opt.value);
-                    const colsList = [...selectedColsList];
-                    colsList[i] = selectedOpts;
-                    setSelectedColsList(colsList);
-                  }}
-                  options={cols.map((col) => {
-                    return { value: col, label: col };
-                  })}
-                />
-                <AddButton onClick={addColumnsList} />
-                {i !== 0 && <RemoveButton onClick={removeColumnsList} />}
-              </div>
-            );
-          })}
-        </div>
-      )}
+          <span className='file-custom'>
+            <span className='filename'>
+              {file.length === 0 ? 'Choose file...' : file.name}
+            </span>
+            <span className='browse'>Browse</span>
+          </span>
+        </label>
+        {sheets.length > 0 && (
+          <div className='flex'>
+            <label>
+              Choose sheet:
+              <Select
+                className='select'
+                placeholder='Sheet'
+                onChange={(selected) => {
+                  setSelectedColsList([[]]);
+                  setSelectedSheet(selected.value);
+                  readSheet(selected.value);
+                }}
+                options={sheets.map((sheet) => {
+                  return { value: sheet, label: sheet };
+                })}
+              />
+            </label>
+          </div>
+        )}
+        {selectedSheet && cols.length > 0 && (
+          <div className='columns'>
+            <label>Choose column:</label>
+            {selectedColsList.map((x, i) => {
+              return (
+                <div className='flex' key={i}>
+                  <Select
+                    key={i}
+                    className='select'
+                    placeholder='Column(s)'
+                    isMulti={true}
+                    isClearable={true}
+                    onChange={(selected) => {
+                      let selectedOpts = selected.map((opt) => opt.value);
+                      const colsList = [...selectedColsList];
+                      colsList[i] = selectedOpts;
+                      setSelectedColsList(colsList);
+                    }}
+                    options={cols.map((col) => {
+                      return { value: col, label: col };
+                    })}
+                  />
+                  <AddButton onClick={addColumnsList} />
+                  {i !== 0 && <RemoveButton onClick={removeColumnsList} />}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
       {selectedColsList[0].length > 0 && (
         <DFDRChart time={time} data={data} columnsList={selectedColsList} />
       )}
