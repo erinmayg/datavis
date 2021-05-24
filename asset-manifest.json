@@ -1,24 +1,24 @@
 {
   "files": {
-    "main.css": "/datavis/static/css/main.fbd151a0.chunk.css",
-    "main.js": "/datavis/static/js/main.7f0f8500.chunk.js",
-    "main.js.map": "/datavis/static/js/main.7f0f8500.chunk.js.map",
+    "main.css": "/datavis/static/css/main.f1532ed4.chunk.css",
+    "main.js": "/datavis/static/js/main.0bfc7689.chunk.js",
+    "main.js.map": "/datavis/static/js/main.0bfc7689.chunk.js.map",
     "runtime-main.js": "/datavis/static/js/runtime-main.3cf19198.js",
     "runtime-main.js.map": "/datavis/static/js/runtime-main.3cf19198.js.map",
-    "static/js/2.7bbd49f8.chunk.js": "/datavis/static/js/2.7bbd49f8.chunk.js",
-    "static/js/2.7bbd49f8.chunk.js.map": "/datavis/static/js/2.7bbd49f8.chunk.js.map",
+    "static/js/2.cc39d028.chunk.js": "/datavis/static/js/2.cc39d028.chunk.js",
+    "static/js/2.cc39d028.chunk.js.map": "/datavis/static/js/2.cc39d028.chunk.js.map",
     "static/js/3.a66cc6e5.chunk.js": "/datavis/static/js/3.a66cc6e5.chunk.js",
     "static/js/3.a66cc6e5.chunk.js.map": "/datavis/static/js/3.a66cc6e5.chunk.js.map",
     "index.html": "/datavis/index.html",
-    "static/css/main.fbd151a0.chunk.css.map": "/datavis/static/css/main.fbd151a0.chunk.css.map",
-    "static/js/2.7bbd49f8.chunk.js.LICENSE.txt": "/datavis/static/js/2.7bbd49f8.chunk.js.LICENSE.txt",
+    "static/css/main.f1532ed4.chunk.css.map": "/datavis/static/css/main.f1532ed4.chunk.css.map",
+    "static/js/2.cc39d028.chunk.js.LICENSE.txt": "/datavis/static/js/2.cc39d028.chunk.js.LICENSE.txt",
     "static/media/plus.8b9b2c39.svg": "/datavis/static/media/plus.8b9b2c39.svg",
     "static/media/remove.d2c74e73.svg": "/datavis/static/media/remove.d2c74e73.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.3cf19198.js",
-    "static/js/2.7bbd49f8.chunk.js",
-    "static/css/main.fbd151a0.chunk.css",
-    "static/js/main.7f0f8500.chunk.js"
+    "static/js/2.cc39d028.chunk.js",
+    "static/css/main.f1532ed4.chunk.css",
+    "static/js/main.0bfc7689.chunk.js"
   ]
 }
