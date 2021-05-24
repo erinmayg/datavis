@@ -55,12 +55,15 @@ function DFDRChart(props) {
   return (
     <div>
       {props.columnsList.map((columns, i) => {
+        if (columns.length === 0) return null;
         return (
           <Chart
             key={i}
             series={constructSeries(columns)}
             options={constructOptions(i + 1)}
-            height={500 / props.columnsList.length}
+            height={
+              500 / props.columnsList.filter((cols) => cols.length > 0).length
+            }
           />
         );
       })}

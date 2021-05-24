@@ -17,7 +17,7 @@ function App() {
   const [data, setData] = useState([]);
   const [time, setTime] = useState([]);
 
-  const readCols = (file) => {
+  const readSheets = (file) => {
     const promise = new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsArrayBuffer(file);
@@ -30,10 +30,31 @@ function App() {
           sheets: 0,
           sheetRows: 1,
         });
-        setSheets(wb.SheetNames);
-        setSelectedSheet(wb.SheetNames[0]);
-        const wsName = wb.SheetNames[0];
-        const ws = wb.Sheets[wsName];
+        resolve(wb.SheetNames);
+      };
+
+      reader.onerror = (error) => {
+        reject(error);
+      };
+    });
+
+    promise.then((sheets) => setSheets(sheets));
+  };
+
+  const readCols = (sheet) => {
+    const promise = new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsArrayBuffer(file);
+
+      reader.onload = (e) => {
+        const bufferArray = e.target.result;
+        const wb = XLSX.read(bufferArray, {
+          type: 'buffer',
+          cellDates: true,
+          sheets: sheet,
+          sheetRows: 1,
+        });
+        const ws = wb.Sheets[sheet];
         const cols = XLSX.utils.sheet_to_csv(ws);
         resolve(cols);
       };
@@ -79,7 +100,8 @@ function App() {
     });
   };
 
-  const addColumnsList = () => {
+  const addColumnsList = (i) => {
+    if (selectedColsList[i].length === 0) return;
     setSelectedColsList([...selectedColsList, []]);
   };
 
@@ -104,16 +126,20 @@ function App() {
             onChange={(e) => {
               let file = e.target.files[0];
               setFile(file);
-              readCols(file);
+              readSheets(file);
             }}
           />
           <span className='file-custom'>
             <span className='filename'>
-              {file.length === 0 ? 'Choose file...' : file.name}
+              {file.length === 0 ? 'Choose .xlsx file...' : file.name}
             </span>
             <span className='browse'>Browse</span>
           </span>
         </label>
+        <p className='warning'>
+          Please ensure that the first row of each sheet is the header column
+          and that each sheet has a 'GMT' column
+        </p>
         {sheets.length > 0 && (
           <div className='flex'>
             <label>
@@ -121,9 +147,11 @@ function App() {
               <Select
                 className='select'
                 placeholder='Sheet'
+                value={{ value: selectedSheet, label: selectedSheet }}
                 onChange={(selected) => {
                   setSelectedColsList([[]]);
                   setSelectedSheet(selected.value);
+                  readCols(selected.value);
                   readSheet(selected.value);
                 }}
                 options={sheets.map((sheet) => {
@@ -145,18 +173,24 @@ function App() {
                     placeholder='Column(s)'
                     isMulti={true}
                     isClearable={true}
+                    value={selectedColsList[i].map((cols) => {
+                      return { value: cols, label: cols };
+                    })}
                     onChange={(selected) => {
                       let selectedOpts = selected.map((opt) => opt.value);
                       const colsList = [...selectedColsList];
                       colsList[i] = selectedOpts;
+                      console.log(colsList);
                       setSelectedColsList(colsList);
                     }}
                     options={cols.map((col) => {
                       return { value: col, label: col };
                     })}
                   />
-                  <AddButton onClick={addColumnsList} />
-                  {i !== 0 && <RemoveButton onClick={removeColumnsList} />}
+                  <AddButton onClick={(e) => addColumnsList(i)} />
+                  {i !== 0 && (
+                    <RemoveButton onClick={(e) => removeColumnsList(i)} />
+                  )}
                 </div>
               );
             })}
