@@ -40,7 +40,7 @@ function DFDRChart(props) {
         width: 1,
       },
       theme: {
-        palette: 'palette1',
+        palette: 'palette' + ((id % 10) + 1),
       },
       dataLabels: {
         enabled: false,
@@ -64,7 +64,7 @@ function DFDRChart(props) {
           <Chart
             key={i}
             series={constructSeries(columns)}
-            options={constructOptions(i + 1, props.showMarker)}
+            options={constructOptions(i, props.showMarker)}
             height={
               500 / props.columnsList.filter((cols) => cols.length > 0).length
             }

@@ -5,6 +5,7 @@ import Select from 'react-select';
 import DFDRChart from './components/DFDRChart';
 import { ReactComponent as AddButton } from './svg/plus.svg';
 import { ReactComponent as RemoveButton } from './svg/remove.svg';
+import { ReactComponent as HelpButton } from './svg/help.svg';
 
 function App() {
   let filetypes = '.xls, .xlsx';
@@ -174,7 +175,16 @@ function App() {
         )}
         {selectedSheet && cols.length > 0 && (
           <div className='columns'>
-            <label>Choose column:</label>
+            <label>
+              Choose columns:{' '}
+              <span className='tooltip'>
+                <HelpButton />
+                <span className='tooltip-text'>
+                  Select multiple parameters to plot on the same chart. To plot
+                  in a different graph click the 'Add' button
+                </span>
+              </span>
+            </label>
             {selectedColsList.map((x, i) => {
               return (
                 <div className='flex' key={i}>
