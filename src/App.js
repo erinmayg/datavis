@@ -16,6 +16,7 @@ function App() {
   const [selectedColsList, setSelectedColsList] = useState([[]]);
   const [data, setData] = useState([]);
   const [time, setTime] = useState([]);
+  const [showMarker, setShowMarker] = useState(false);
 
   const readSheets = (file) => {
     const promise = new Promise((resolve, reject) => {
@@ -140,6 +141,16 @@ function App() {
           Please ensure that the first row of each sheet is the header column
           and that each sheet has a 'GMT' column
         </p>
+        <input
+          type='checkbox'
+          className='checkbox'
+          id='showMarker'
+          name='marker'
+          value='marker'
+          checked={showMarker}
+          onChange={() => setShowMarker(!showMarker)}
+        />
+        <label for='showMarker'>Show Marker</label>
         {sheets.length > 0 && (
           <div className='flex'>
             <label>
@@ -198,7 +209,12 @@ function App() {
         )}
       </div>
       {selectedColsList[0].length > 0 && (
-        <DFDRChart time={time} data={data} columnsList={selectedColsList} />
+        <DFDRChart
+          time={time}
+          data={data}
+          columnsList={selectedColsList}
+          showMarker={showMarker}
+        />
       )}
     </div>
   );

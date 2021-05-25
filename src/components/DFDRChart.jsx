@@ -12,7 +12,7 @@ function DFDRChart(props) {
           .filter((data) => !isNaN(data[1])),
       };
     });
-  const constructOptions = (id) => {
+  const constructOptions = (id, showMarker) => {
     return {
       chart: {
         id: id,
@@ -46,7 +46,7 @@ function DFDRChart(props) {
         },
       },
       markers: {
-        size: 2,
+        size: showMarker ? 2 : 0,
         strokeWidth: 0,
       },
     };
@@ -60,7 +60,7 @@ function DFDRChart(props) {
           <Chart
             key={i}
             series={constructSeries(columns)}
-            options={constructOptions(i + 1)}
+            options={constructOptions(i + 1, props.showMarker)}
             height={
               500 / props.columnsList.filter((cols) => cols.length > 0).length
             }
