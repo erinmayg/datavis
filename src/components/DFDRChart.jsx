@@ -32,6 +32,10 @@ function DFDRChart(props) {
           },
         },
       },
+      legend: {
+        show: true,
+        showForSingleSeries: true,
+      },
       stroke: {
         width: 1,
       },
