@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/datavis/static/css/main.92fe31a5.chunk.css",
-    "main.js": "/datavis/static/js/main.b2a78a78.chunk.js",
-    "main.js.map": "/datavis/static/js/main.b2a78a78.chunk.js.map",
+    "main.css": "/datavis/static/css/main.3792532b.chunk.css",
+    "main.js": "/datavis/static/js/main.9b8ed7a2.chunk.js",
+    "main.js.map": "/datavis/static/js/main.9b8ed7a2.chunk.js.map",
     "runtime-main.js": "/datavis/static/js/runtime-main.3cf19198.js",
     "runtime-main.js.map": "/datavis/static/js/runtime-main.3cf19198.js.map",
     "static/js/2.cc39d028.chunk.js": "/datavis/static/js/2.cc39d028.chunk.js",
@@ -10,7 +10,7 @@
     "static/js/3.a66cc6e5.chunk.js": "/datavis/static/js/3.a66cc6e5.chunk.js",
     "static/js/3.a66cc6e5.chunk.js.map": "/datavis/static/js/3.a66cc6e5.chunk.js.map",
     "index.html": "/datavis/index.html",
-    "static/css/main.92fe31a5.chunk.css.map": "/datavis/static/css/main.92fe31a5.chunk.css.map",
+    "static/css/main.3792532b.chunk.css.map": "/datavis/static/css/main.3792532b.chunk.css.map",
     "static/js/2.cc39d028.chunk.js.LICENSE.txt": "/datavis/static/js/2.cc39d028.chunk.js.LICENSE.txt",
     "static/media/help.aed9a9a8.svg": "/datavis/static/media/help.aed9a9a8.svg",
     "static/media/plus.8b9b2c39.svg": "/datavis/static/media/plus.8b9b2c39.svg",
@@ -19,7 +19,7 @@
   "entrypoints": [
     "static/js/runtime-main.3cf19198.js",
     "static/js/2.cc39d028.chunk.js",
-    "static/css/main.92fe31a5.chunk.css",
-    "static/js/main.b2a78a78.chunk.js"
+    "static/css/main.3792532b.chunk.css",
+    "static/js/main.9b8ed7a2.chunk.js"
   ]
 }
