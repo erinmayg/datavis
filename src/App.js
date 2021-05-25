@@ -66,9 +66,7 @@ function App() {
       };
     });
 
-    promise.then((dataCols) =>
-      setCols(dataCols.split(',').filter((x) => x !== ''))
-    );
+    promise.then((dataCols) => setCols(dataCols.split(',')));
   };
 
   const readSheet = (sheet) => {
@@ -112,7 +110,6 @@ function App() {
   const removeColumnsList = (i) => {
     const list = [...selectedColsList];
     list.splice(i, 1);
-    console.log(list);
     setSelectedColsList(list);
   };
 
@@ -153,7 +150,7 @@ function App() {
           checked={showMarker}
           onChange={() => setShowMarker(!showMarker)}
         />
-        <label for='showMarker'>Show Marker</label>
+        <label>Show Marker</label>
         {sheets.length > 0 && (
           <div className='flex'>
             <label>
@@ -189,7 +186,7 @@ function App() {
             </label>
             {selectedColsList.map((x, i) => {
               return (
-                <div className='flex' key={i}>
+                <div className='flex selectCols' key={i}>
                   <Select
                     key={i}
                     className='select'
@@ -210,7 +207,9 @@ function App() {
                       return { value: col, label: col };
                     })}
                   />
-                  <AddButton onClick={(e) => addColumnsList(i)} />
+                  {i === selectedColsList.length - 1 && (
+                    <AddButton onClick={(e) => addColumnsList(i)} />
+                  )}
                   {i !== 0 && (
                     <RemoveButton onClick={(e) => removeColumnsList(i)} />
                   )}
@@ -224,7 +223,7 @@ function App() {
         <DFDRChart
           time={time}
           data={data}
-          columnsList={selectedColsList}
+          columnsList={selectedColsList.filter((cols) => cols.length > 0)}
           showMarker={showMarker}
         />
       )}

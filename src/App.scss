@@ -24,6 +24,15 @@ label {
 
 .select {
   min-width: 150px;
+  margin-right: 1rem;
+}
+
+.selectCols {
+  margin-top: 0.5rem;
+
+  &:nth-of-type(1) {
+    margin-top: 0rem;
+  }
 }
 
 .button {
@@ -65,12 +74,8 @@ label {
   color: red;
 }
 
-.add {
-  margin-left: 1rem;
-
-  &:hover {
-    color: green;
-  }
+.add:hover {
+  color: green;
 }
 
 .title {

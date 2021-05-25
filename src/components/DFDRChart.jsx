@@ -3,6 +3,10 @@ import Chart from 'react-apexcharts';
 import moment from 'moment';
 
 function DFDRChart(props) {
+  const generateID = (id) => {
+    return id.toString() + new Date().getTime().toString();
+  };
+
   let palettes = [
     'palette1',
     'palette10',
@@ -25,6 +29,7 @@ function DFDRChart(props) {
           .filter((data) => !isNaN(data[1])),
       };
     });
+
   const constructOptions = (id, showMarker) => {
     return {
       chart: {
@@ -53,7 +58,7 @@ function DFDRChart(props) {
         width: 1,
       },
       theme: {
-        palette: palettes[id % 10],
+        palette: palettes[(id - 1) % 10],
       },
       dataLabels: {
         enabled: false,
@@ -72,15 +77,12 @@ function DFDRChart(props) {
   return (
     <div>
       {props.columnsList.map((columns, i) => {
-        if (columns.length === 0) return null;
         return (
           <Chart
-            key={i}
+            key={generateID(i)}
             series={constructSeries(columns)}
-            options={constructOptions(i, props.showMarker)}
-            height={
-              500 / props.columnsList.filter((cols) => cols.length > 0).length
-            }
+            options={constructOptions(i + 1, props.showMarker)}
+            height={500 / props.columnsList.length}
           />
         );
       })}
