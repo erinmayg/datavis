@@ -3,6 +3,19 @@ import Chart from 'react-apexcharts';
 import moment from 'moment';
 
 function DFDRChart(props) {
+  let palettes = [
+    'palette1',
+    'palette10',
+    'palette2',
+    'palette9',
+    'palette3',
+    'palette8',
+    'palette4',
+    'palette7',
+    'palette5',
+    'palette6',
+  ];
+
   let constructSeries = (columns) =>
     columns.map((col) => {
       return {
@@ -40,7 +53,7 @@ function DFDRChart(props) {
         width: 1,
       },
       theme: {
-        palette: 'palette' + ((id % 10) + 1),
+        palette: palettes[id % 10],
       },
       dataLabels: {
         enabled: false,

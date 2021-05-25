@@ -66,7 +66,9 @@ function App() {
       };
     });
 
-    promise.then((dataCols) => setCols(dataCols.split(',')));
+    promise.then((dataCols) =>
+      setCols(dataCols.split(',').filter((x) => x !== ''))
+    );
   };
 
   const readSheet = (sheet) => {
