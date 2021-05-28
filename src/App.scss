@@ -11,6 +11,8 @@ $background-color: #1f2a44;
 body {
   text-align: center;
   font-family: Barlow Semi Condensed, sans-serif;
+  min-width: 100vw;
+  min-height: 100vh;
 }
 
 label {
@@ -45,7 +47,11 @@ label {
 
 .select-rate {
   min-width: 100px;
-  margin-left: 1rem;
+  margin: 1rem 0rem;
+}
+
+.checkbox-label {
+  margin-right: 1rem;
 }
 
 .graphForm {
@@ -160,7 +166,6 @@ label {
   font-style: italic;
   font-size: smaller;
   color: #555;
-  width: 24rem;
   margin: 1rem 0rem;
 }
 

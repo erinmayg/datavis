@@ -32,12 +32,17 @@ function DFDRChart(props) {
       };
     });
 
-  const constructOptions = (id, showMarker) => {
+  const constructOptions = (id, showMarker, syncCharts) => {
     return {
       chart: {
         id: id,
-        group: 'dfdr',
+        group: syncCharts ? 'dfdr' : null,
         type: 'line',
+        zoom: {
+          enabled: true,
+          type: syncCharts ? 'x' : 'xy',
+          autoScaleYaxis: !syncCharts,
+        },
       },
       yaxis: {
         labels: {
@@ -83,7 +88,11 @@ function DFDRChart(props) {
           <Chart
             key={generateID(i)}
             series={constructSeries(columns)}
-            options={constructOptions(i + 1, props.showMarker)}
+            options={constructOptions(
+              i + 1,
+              props.showMarker,
+              props.syncCharts
+            )}
             height={500 / props.columnsList.length}
           />
         );

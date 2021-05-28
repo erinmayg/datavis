@@ -20,6 +20,7 @@ function App() {
   const [data, setData] = useState([]);
   const [time, setTime] = useState([]);
   const [showMarker, setShowMarker] = useState(false);
+  const [syncCharts, setSyncCharts] = useState(false);
 
   const readSheets = (file) => {
     const promise = new Promise((resolve, reject) => {
@@ -68,7 +69,9 @@ function App() {
       };
     });
 
-    promise.then((dataCols) => setCols(dataCols.split(',')));
+    promise.then((dataCols) =>
+      setCols(dataCols.split(',').filter((col) => col !== ''))
+    );
   };
 
   const readSheet = (sheet) => {
@@ -97,8 +100,18 @@ function App() {
 
     promise.then((data) => {
       setData(data);
+
+      /* Find time column */
+      let timeIdx = 'GMT';
+      for (let key in data[3]) {
+        if (data[3][key] instanceof Date) {
+          timeIdx = key;
+          break;
+        }
+      }
+
       Object.values(data).forEach((row) => {
-        gmt.push(row['GMT']);
+        gmt.push(row[timeIdx]);
       });
       setTime(gmt);
     });
@@ -176,136 +189,164 @@ function App() {
     </label>
   );
 
+  const colButtons = (i, j) => {
+    return (
+      <>
+        {j === selectedColsList[i].length - 1 && (
+          <AddColButton alt='Add column' onClick={(e) => addColumn(i, j)} />
+        )}
+        {selectedColsList[i].length > 1 && (
+          <RemoveColButton
+            alt='Remove columnn'
+            onClick={(e) => removeColumn(i, j)}
+          />
+        )}
+      </>
+    );
+  };
+
+  const graphButtons = (i) => {
+    return (
+      <>
+        {i === selectedColsList.length - 1 && (
+          <AddButton alt='Add graph' onClick={(e) => addColumnsList(i)} />
+        )}
+        {selectedColsList.length > 1 && (
+          <RemoveButton onClick={(e) => removeColumnsList(i)} />
+        )}
+      </>
+    );
+  };
+
+  const sheetInput = (
+    <div className='flex'>
+      <label>
+        Choose sheet:
+        <Select
+          className='select'
+          placeholder='Sheet'
+          value={{ value: selectedSheet, label: selectedSheet }}
+          onChange={(selected) => handleChooseSheet(selected)}
+          options={sheets.map((sheet) => {
+            return { value: sheet, label: sheet };
+          })}
+        />
+      </label>
+    </div>
+  );
+
+  const colsInput = (i, j) => {
+    return (
+      <div className='selectCols'>
+        {i === 0 && j === 0 && colsLabel}
+        <Select
+          key={i}
+          className='select'
+          placeholder='Column(s)'
+          value={{
+            value: selectedColsList[i][j][0],
+            label: selectedColsList[i][j][0],
+          }}
+          onChange={(selected) => handleChooseColumn(selected, i, j)}
+          options={cols.map((col) => {
+            return { value: col, label: col };
+          })}
+        />
+      </div>
+    );
+  };
+
+  const rateInput = (i, j) => {
+    return (
+      <div>
+        {i === 0 && j === 0 && rateLabel}
+        <div className='flex'>
+          <p>1/</p>
+          <input
+            type='number'
+            className='rate'
+            min='1'
+            max={data.length}
+            placeholder='1'
+            onChange={(e) => handleRate(e.target.value, i, j)}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  const graphForms = (
+    <div className='columns'>
+      {selectedColsList.map((lst, i) => {
+        return (
+          <div className='flex graphForm--outer' key={i}>
+            <div className='graphForm'>
+              <h1>Graph {i + 1}</h1>
+              {lst.map((_, j) => {
+                return (
+                  <div className='flex' key={j}>
+                    {colsInput(i, j)}
+                    {rateInput(i, j)}
+                    {colButtons(i, j)}
+                  </div>
+                );
+              })}
+            </div>
+            {graphButtons(i)}
+          </div>
+        );
+      })}
+    </div>
+  );
+
   return (
     <div className='App'>
       <div className='title'>
         <h1>DFDR Data Visualisation</h1>
       </div>
       <div className='form'>
-        <label className='file'>
-          <input
-            type='file'
-            id='file'
-            accept={filetypes}
-            onChange={(e) => {
-              let file = e.target.files[0];
-              setFile(file);
-              readSheets(file);
-            }}
-          />
-          <span className='file-custom'>
-            <span className='filename'>
-              {file.length === 0 ? 'Choose .xlsx file...' : file.name}
+        <>
+          <label className='file'>
+            <input
+              type='file'
+              id='file'
+              accept={filetypes}
+              onChange={(e) => {
+                let file = e.target.files[0];
+                setFile(file);
+                readSheets(file);
+              }}
+            />
+            <span className='file-custom'>
+              <span className='filename'>
+                {file.length === 0 ? 'Choose .xlsx file...' : file.name}
+              </span>
+              <span className='browse'>Browse</span>
             </span>
-            <span className='browse'>Browse</span>
-          </span>
-        </label>
-        <p className='warning'>
-          Please ensure that the first row of each sheet is the header column
-          and that each sheet has a 'GMT' column
-        </p>
-        <input
-          type='checkbox'
-          className='checkbox'
-          id='showMarker'
-          name='marker'
-          value='marker'
-          checked={showMarker}
-          onChange={() => setShowMarker(!showMarker)}
-        />
-        <label>Show Marker</label>
-        {sheets.length > 0 && (
-          <div className='flex'>
-            <label>
-              Choose sheet:
-              <Select
-                className='select'
-                placeholder='Sheet'
-                value={{ value: selectedSheet, label: selectedSheet }}
-                onChange={(selected) => handleChooseSheet(selected)}
-                options={sheets.map((sheet) => {
-                  return { value: sheet, label: sheet };
-                })}
-              />
-            </label>
-          </div>
-        )}
-        {selectedSheet && cols.length > 0 && (
-          <div className='columns'>
-            {selectedColsList.map((lst, i) => {
-              return (
-                <div className='flex graphForm--outer' key={i}>
-                  <div className='graphForm'>
-                    <h1>Graph {i + 1}</h1>
-                    {lst.map((_, j) => {
-                      return (
-                        <div className='flex' key={j}>
-                          <div className='selectCols'>
-                            {i === 0 && j === 0 && colsLabel}
-                            <Select
-                              key={i}
-                              className='select'
-                              placeholder='Column(s)'
-                              value={{
-                                value: selectedColsList[i][j][0],
-                                label: selectedColsList[i][j][0],
-                              }}
-                              onChange={(selected) =>
-                                handleChooseColumn(selected, i, j)
-                              }
-                              options={cols.map((col) => {
-                                return { value: col, label: col };
-                              })}
-                            />
-                          </div>
+          </label>
+          <p className='warning'>
+            Please ensure that the first row of each sheet is the parameters
+          </p>
+        </>
+        <>
+          <input
+            type='checkbox'
+            className='checkbox'
+            checked={showMarker}
+            onChange={() => setShowMarker(!showMarker)}
+          />
+          <label className='checkbox-label'>Show Marker</label>
 
-                          <div>
-                            {i === 0 && j === 0 && rateLabel}
-                            <div className='flex'>
-                              <p>1/</p>
-                              <input
-                                type='number'
-                                className='rate'
-                                min='1'
-                                max={data.length}
-                                placeholder='1'
-                                onChange={(e) =>
-                                  handleRate(e.target.value, i, j)
-                                }
-                              />
-                            </div>
-                          </div>
-
-                          {j === lst.length - 1 && (
-                            <AddColButton
-                              alt='Add column'
-                              onClick={(e) => addColumn(i, j)}
-                            />
-                          )}
-                          {j !== 0 && (
-                            <RemoveColButton
-                              alt='Remove columnn'
-                              onClick={(e) => removeColumn(i, j)}
-                            />
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                  {i === selectedColsList.length - 1 && (
-                    <AddButton
-                      alt='Add graph'
-                      onClick={(e) => addColumnsList(i)}
-                    />
-                  )}
-                  {i !== 0 && (
-                    <RemoveButton onClick={(e) => removeColumnsList(i)} />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
+          <input
+            type='checkbox'
+            className='checkbox'
+            checked={syncCharts}
+            onChange={() => setSyncCharts(!syncCharts)}
+          />
+          <label className='checkbox-label'>Sync Charts</label>
+        </>
+        {sheets.length > 0 && sheetInput}
+        {selectedSheet && cols.length > 0 && graphForms}
       </div>
       {selectedColsList[0][0].length > 0 && (
         <DFDRChart
@@ -315,6 +356,7 @@ function App() {
             (lst) => lst.filter((cols) => cols.length > 0).length > 0
           )}
           showMarker={showMarker}
+          syncCharts={syncCharts}
         />
       )}
     </div>
