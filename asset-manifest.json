@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/datavis/static/css/main.ed7af169.chunk.css",
-    "main.js": "/datavis/static/js/main.0dc6a7f9.chunk.js",
-    "main.js.map": "/datavis/static/js/main.0dc6a7f9.chunk.js.map",
+    "main.js": "/datavis/static/js/main.c8878aef.chunk.js",
+    "main.js.map": "/datavis/static/js/main.c8878aef.chunk.js.map",
     "runtime-main.js": "/datavis/static/js/runtime-main.3cf19198.js",
     "runtime-main.js.map": "/datavis/static/js/runtime-main.3cf19198.js.map",
     "static/js/2.82c7d573.chunk.js": "/datavis/static/js/2.82c7d573.chunk.js",
@@ -22,6 +22,6 @@
     "static/js/runtime-main.3cf19198.js",
     "static/js/2.82c7d573.chunk.js",
     "static/css/main.ed7af169.chunk.css",
-    "static/js/main.0dc6a7f9.chunk.js"
+    "static/js/main.c8878aef.chunk.js"
   ]
 }
