@@ -164,28 +164,28 @@ function App() {
     setSelectedColsList(colsList);
   };
 
+  const tooltip = (tip) => {
+    return (
+      <span className='tooltip'>
+        <HelpButton />
+        <span className='tooltip-text'>{tip}</span>
+      </span>
+    );
+  };
+
   const colsLabel = (
     <label>
       Choose columns:{' '}
-      <span className='tooltip'>
-        <HelpButton />
-        <span className='tooltip-text'>
-          Select multiple parameters to plot on the same chart. To plot in a
-          different graph click the 'Add' button
-        </span>
-      </span>
+      {tooltip(
+        "Select multiple parameters to plot on the same chart. To plot in a different graph click the 'Add' button"
+      )}
     </label>
   );
 
   const rateLabel = (
     <label>
       Sampling rate:{' '}
-      <span className='tooltip'>
-        <HelpButton />
-        <span className='tooltip-text'>
-          Sample 1 data every n seconds, where n is the user input
-        </span>
-      </span>
+      {tooltip('Sample 1 data every n seconds, where n is the user input')}
     </label>
   );
 
@@ -343,7 +343,12 @@ function App() {
             checked={syncCharts}
             onChange={() => setSyncCharts(!syncCharts)}
           />
-          <label className='checkbox-label'>Sync Charts</label>
+          <label className='checkbox-label'>
+            Sync Charts{' '}
+            {tooltip(
+              'Untick to enable zoom across y-axis. Tick to enable synced zooming (across x-axis) for all charts'
+            )}
+          </label>
         </>
         {sheets.length > 0 && sheetInput}
         {selectedSheet && cols.length > 0 && graphForms}
