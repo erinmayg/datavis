@@ -21,12 +21,14 @@ function DFDRChart(props) {
   ];
 
   let constructSeries = (columns) =>
-    columns.map((col) => {
+    columns.map((tuple) => {
+      const col = tuple[0];
+      const rate = tuple[1];
       return {
         name: col,
         data: props.time
           .map((t, i) => [t, props.data[i][col]])
-          .filter((data) => !isNaN(data[1])),
+          .filter((data, i) => i % rate === 0 && !isNaN(data[1])),
       };
     });
 

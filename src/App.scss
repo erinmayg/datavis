@@ -27,16 +27,76 @@ label {
   margin-right: 1rem;
 }
 
-.selectCols {
+.graphForm--outer {
   margin-top: 0.5rem;
 
   &:nth-of-type(1) {
     margin-top: 0rem;
   }
+
+  .selectCols {
+    margin-top: 0.5rem;
+
+    &:nth-of-type(1) {
+      margin-top: 0rem;
+    }
+  }
+}
+
+.select-rate {
+  min-width: 100px;
+  margin-left: 1rem;
+}
+
+.graphForm {
+  background-color: rgba(128, 128, 128, 0.1);
+  border: 2px dashed grey;
+  border-radius: 20px;
+  padding: 1rem;
+  width: 360px;
+  margin-right: 1rem;
+
+  .rate {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    background-color: hsl(0, 0%, 100%);
+    border: 1px solid hsl(0, 0%, 80%);
+    border-radius: 4px;
+
+    min-height: 38px;
+    max-width: 60px;
+    outline: 0 !important;
+
+    font-family: inherit;
+    font-size: 1.2rem;
+
+    -webkit-transition: all 100ms;
+    transition: all 100ms;
+    box-sizing: border-box;
+  }
+
+  .rate:focus {
+    outline: 1px blue !important;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    color: grey;
+  }
 }
 
 .button {
   width: 2rem;
+  cursor: pointer;
+  color: grey;
+}
+
+.colButton--remove {
+  width: 1.5rem;
   cursor: pointer;
   color: grey;
 }

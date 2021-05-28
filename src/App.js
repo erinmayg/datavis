@@ -3,9 +3,11 @@ import './App.scss';
 import * as XLSX from 'xlsx';
 import Select from 'react-select';
 import DFDRChart from './components/DFDRChart';
+import { ReactComponent as HelpButton } from './svg/help.svg';
 import { ReactComponent as AddButton } from './svg/plus.svg';
 import { ReactComponent as RemoveButton } from './svg/remove.svg';
-import { ReactComponent as HelpButton } from './svg/help.svg';
+import { ReactComponent as AddColButton } from './svg/plusCol.svg';
+import { ReactComponent as RemoveColButton } from './svg/removeCol.svg';
 
 function App() {
   let filetypes = '.xls, .xlsx';
@@ -14,7 +16,7 @@ function App() {
   const [sheets, setSheets] = useState([]);
   const [selectedSheet, setSelectedSheet] = useState();
   const [cols, setCols] = useState([]);
-  const [selectedColsList, setSelectedColsList] = useState([[]]);
+  const [selectedColsList, setSelectedColsList] = useState([[[]]]);
   const [data, setData] = useState([]);
   const [time, setTime] = useState([]);
   const [showMarker, setShowMarker] = useState(false);
@@ -103,8 +105,8 @@ function App() {
   };
 
   const addColumnsList = (i) => {
-    if (selectedColsList[i].length === 0) return;
-    setSelectedColsList([...selectedColsList, []]);
+    if (selectedColsList[i][0].length === 0) return;
+    setSelectedColsList([...selectedColsList, [[]]]);
   };
 
   const removeColumnsList = (i) => {
@@ -112,6 +114,67 @@ function App() {
     list.splice(i, 1);
     setSelectedColsList(list);
   };
+
+  const handleChooseSheet = (selected) => {
+    setSelectedColsList([[[]]]);
+    setSelectedSheet(selected.value);
+    readCols(selected.value);
+    readSheet(selected.value);
+  };
+
+  const handleChooseColumn = (selected, i, j) => {
+    const colsList = [...selectedColsList];
+    colsList[i][j] = [...[selected.value, 1]];
+    console.log(colsList);
+    setSelectedColsList(colsList);
+  };
+
+  const handleRate = (val, i, j) => {
+    const colsList = [...selectedColsList];
+    colsList[i][j] = [...[colsList[i][j][0], val]];
+    console.log(colsList);
+    setSelectedColsList(colsList);
+  };
+
+  const addColumn = (i, j) => {
+    if (selectedColsList[i][j].length === 0) return;
+    const colsList = [...selectedColsList];
+    colsList[i] = [...colsList[i], []];
+    console.log(colsList);
+    setSelectedColsList(colsList);
+  };
+
+  const removeColumn = (i, j) => {
+    const colsList = [...selectedColsList];
+    colsList[i].splice(j, 1);
+    console.log(colsList);
+    setSelectedColsList(colsList);
+  };
+
+  const colsLabel = (
+    <label>
+      Choose columns:{' '}
+      <span className='tooltip'>
+        <HelpButton />
+        <span className='tooltip-text'>
+          Select multiple parameters to plot on the same chart. To plot in a
+          different graph click the 'Add' button
+        </span>
+      </span>
+    </label>
+  );
+
+  const rateLabel = (
+    <label>
+      Sampling rate:{' '}
+      <span className='tooltip'>
+        <HelpButton />
+        <span className='tooltip-text'>
+          Sample 1 data every n seconds, where n is the user input
+        </span>
+      </span>
+    </label>
+  );
 
   return (
     <div className='App'>
@@ -159,12 +222,7 @@ function App() {
                 className='select'
                 placeholder='Sheet'
                 value={{ value: selectedSheet, label: selectedSheet }}
-                onChange={(selected) => {
-                  setSelectedColsList([[]]);
-                  setSelectedSheet(selected.value);
-                  readCols(selected.value);
-                  readSheet(selected.value);
-                }}
+                onChange={(selected) => handleChooseSheet(selected)}
                 options={sheets.map((sheet) => {
                   return { value: sheet, label: sheet };
                 })}
@@ -174,41 +232,71 @@ function App() {
         )}
         {selectedSheet && cols.length > 0 && (
           <div className='columns'>
-            <label>
-              Choose columns:{' '}
-              <span className='tooltip'>
-                <HelpButton />
-                <span className='tooltip-text'>
-                  Select multiple parameters to plot on the same chart. To plot
-                  in a different graph click the 'Add' button
-                </span>
-              </span>
-            </label>
-            {selectedColsList.map((x, i) => {
+            {selectedColsList.map((lst, i) => {
               return (
-                <div className='flex selectCols' key={i}>
-                  <Select
-                    key={i}
-                    className='select'
-                    placeholder='Column(s)'
-                    isMulti={true}
-                    isClearable={true}
-                    value={selectedColsList[i].map((cols) => {
-                      return { value: cols, label: cols };
+                <div className='flex graphForm--outer' key={i}>
+                  <div className='graphForm'>
+                    <h1>Graph {i + 1}</h1>
+                    {lst.map((_, j) => {
+                      return (
+                        <div className='flex' key={j}>
+                          <div className='selectCols'>
+                            {i === 0 && j === 0 && colsLabel}
+                            <Select
+                              key={i}
+                              className='select'
+                              placeholder='Column(s)'
+                              value={{
+                                value: selectedColsList[i][j][0],
+                                label: selectedColsList[i][j][0],
+                              }}
+                              onChange={(selected) =>
+                                handleChooseColumn(selected, i, j)
+                              }
+                              options={cols.map((col) => {
+                                return { value: col, label: col };
+                              })}
+                            />
+                          </div>
+
+                          <div>
+                            {i === 0 && j === 0 && rateLabel}
+                            <div className='flex'>
+                              <p>1/</p>
+                              <input
+                                type='number'
+                                className='rate'
+                                min='1'
+                                max={data.length}
+                                placeholder='1'
+                                onChange={(e) =>
+                                  handleRate(e.target.value, i, j)
+                                }
+                              />
+                            </div>
+                          </div>
+
+                          {j === lst.length - 1 && (
+                            <AddColButton
+                              alt='Add column'
+                              onClick={(e) => addColumn(i, j)}
+                            />
+                          )}
+                          {j !== 0 && (
+                            <RemoveColButton
+                              alt='Remove columnn'
+                              onClick={(e) => removeColumn(i, j)}
+                            />
+                          )}
+                        </div>
+                      );
                     })}
-                    onChange={(selected) => {
-                      let selectedOpts = selected.map((opt) => opt.value);
-                      const colsList = [...selectedColsList];
-                      colsList[i] = selectedOpts;
-                      console.log(colsList);
-                      setSelectedColsList(colsList);
-                    }}
-                    options={cols.map((col) => {
-                      return { value: col, label: col };
-                    })}
-                  />
+                  </div>
                   {i === selectedColsList.length - 1 && (
-                    <AddButton onClick={(e) => addColumnsList(i)} />
+                    <AddButton
+                      alt='Add graph'
+                      onClick={(e) => addColumnsList(i)}
+                    />
                   )}
                   {i !== 0 && (
                     <RemoveButton onClick={(e) => removeColumnsList(i)} />
@@ -219,11 +307,13 @@ function App() {
           </div>
         )}
       </div>
-      {selectedColsList[0].length > 0 && (
+      {selectedColsList[0][0].length > 0 && (
         <DFDRChart
           time={time}
           data={data}
-          columnsList={selectedColsList.filter((cols) => cols.length > 0)}
+          columnsList={selectedColsList.filter(
+            (lst) => lst.filter((cols) => cols.length > 0).length > 0
+          )}
           showMarker={showMarker}
         />
       )}
