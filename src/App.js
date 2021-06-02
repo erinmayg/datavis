@@ -20,7 +20,6 @@ function App() {
   const [data, setData] = useState([]);
   const [time, setTime] = useState([]);
   const [showMarker, setShowMarker] = useState(false);
-  const [syncCharts, setSyncCharts] = useState(false);
 
   const readSheets = (file) => {
     const promise = new Promise((resolve, reject) => {
@@ -336,19 +335,6 @@ function App() {
             onChange={() => setShowMarker(!showMarker)}
           />
           <label className='checkbox-label'>Show Marker</label>
-
-          <input
-            type='checkbox'
-            className='checkbox'
-            checked={syncCharts}
-            onChange={() => setSyncCharts(!syncCharts)}
-          />
-          <label className='checkbox-label'>
-            Sync Charts{' '}
-            {tooltip(
-              'Untick to enable zoom across y-axis. Tick to enable synced zooming (across x-axis) for all charts'
-            )}
-          </label>
         </>
         {sheets.length > 0 && sheetInput}
         {selectedSheet && cols.length > 0 && graphForms}
@@ -361,7 +347,6 @@ function App() {
             (lst) => lst.filter((cols) => cols.length > 0).length > 0
           )}
           showMarker={showMarker}
-          syncCharts={syncCharts}
         />
       )}
     </div>

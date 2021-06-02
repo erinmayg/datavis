@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Chart from 'react-apexcharts';
 import moment from 'moment';
 
 function DFDRChart(props) {
+  const [xAxis, setXAxis] = useState({
+    min: props.time[0],
+    max: props.time[props.time.length - 1],
+  });
+
+  const [yAxis, setYAxis] = useState([]);
+
   const generateID = (id) => {
     return id.toString() + new Date().getTime().toString();
   };
@@ -32,30 +39,61 @@ function DFDRChart(props) {
       };
     });
 
-  const constructOptions = (id, showMarker, syncCharts) => {
+  const constructOptions = (id, showMarker) => {
     return {
       chart: {
         id: id,
-        group: syncCharts ? 'dfdr' : null,
+        group: 'dfdr',
         type: 'line',
+        offsetY: -40 * (id - 1),
         zoom: {
           enabled: true,
-          type: syncCharts ? 'x' : 'xy',
-          autoScaleYaxis: !syncCharts,
+          type: 'xy',
+          autoScaleYaxis: true,
+        },
+        events: {
+          zoomed: function (chartContext, { xaxis, yaxis }) {
+            setXAxis(xaxis);
+            let newYAxis = [...yAxis];
+            if (yaxis === undefined) {
+              newYAxis.fill(undefined);
+            } else {
+              newYAxis[id - 1] = { min: yaxis[0].min, max: yaxis[0].max };
+            }
+            setYAxis(newYAxis);
+          },
+        },
+        toolbar: {
+          show: id === 1,
         },
       },
       yaxis: {
         labels: {
-          minWidth: 20,
+          minWidth: 40,
+          maxWidth: 40,
+        },
+        decimalsInFloat: 3,
+        min: function (min) {
+          return yAxis[id - 1] === undefined
+            ? Math.floor(min / 10) * 10
+            : yAxis[id - 1].min;
+        },
+        max: function (max) {
+          return yAxis[id - 1] === undefined
+            ? Math.ceil(max / 10) * 10
+            : yAxis[id - 1].max;
         },
       },
       xaxis: {
         type: 'datetime',
         labels: {
+          show: id === props.columnsList.length,
           formatter: function (val, timestamp) {
             return moment(new Date(timestamp)).format('HH:mm:ss');
           },
         },
+        min: xAxis.min,
+        max: xAxis.max,
       },
       legend: {
         show: true,
@@ -88,12 +126,11 @@ function DFDRChart(props) {
           <Chart
             key={generateID(i)}
             series={constructSeries(columns)}
-            options={constructOptions(
-              i + 1,
-              props.showMarker,
-              props.syncCharts
-            )}
-            height={500 / props.columnsList.length}
+            options={constructOptions(i + 1, props.showMarker)}
+            height={
+              (Math.floor(props.columnsList.length / 4) * 100 + 500) /
+              props.columnsList.length
+            }
           />
         );
       })}

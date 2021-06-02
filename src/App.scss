@@ -11,8 +11,12 @@ $background-color: #1f2a44;
 body {
   text-align: center;
   font-family: Barlow Semi Condensed, sans-serif;
-  min-width: 100vw;
-  min-height: 100vh;
+}
+
+.App {
+  width: 100vw;
+  overflow-x: hidden;
+  height: 100vh;
 }
 
 label {
