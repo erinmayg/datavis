@@ -19,6 +19,11 @@ body {
   height: 100vh;
 }
 
+button {
+  cursor: pointer;
+  padding: 0.8rem 0.5rem;
+}
+
 label {
   margin-top: 1rem;
 }
@@ -109,6 +114,7 @@ label {
   width: 1.5rem;
   cursor: pointer;
   color: grey;
+  margin-left: 0.2rem;
 }
 
 .helpButton {
@@ -236,4 +242,40 @@ label {
 
 .columns {
   margin-top: 1rem;
+}
+
+.chart {
+  margin: -2rem 1rem;
+  &:first-of-type {
+    margin: 0rem 1rem;
+  }
+}
+
+.pdf-button {
+  width: 2rem;
+}
+
+.downloadButton {
+  color: gray;
+  padding: 0.5rem 0.4rem;
+  margin: 1rem;
+  cursor: pointer;
+  border: 1px solid gray;
+  border-radius: 10px;
+  width: fit-content;
+  transition: all ease-in-out 300;
+  &:hover {
+    color: white;
+    background-color: green;
+    border-color: green;
+  }
+}
+
+.pointer {
+  cursor: pointer;
+  width: fit-content;
+
+  .checkbox-label {
+    cursor: pointer;
+  }
 }

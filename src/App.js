@@ -3,6 +3,7 @@ import './App.scss';
 import * as XLSX from 'xlsx';
 import Select from 'react-select';
 import DFDRChart from './components/DFDRChart';
+import PDFDownloadButton from './components/PDFDownloadButton';
 import { ReactComponent as HelpButton } from './svg/help.svg';
 import { ReactComponent as AddButton } from './svg/plus.svg';
 import { ReactComponent as RemoveButton } from './svg/remove.svg';
@@ -190,7 +191,7 @@ function App() {
 
   const colButtons = (i, j) => {
     return (
-      <>
+      <div className='flex align-left'>
         {j === selectedColsList[i].length - 1 && (
           <AddColButton alt='Add column' onClick={(e) => addColumn(i, j)} />
         )}
@@ -200,7 +201,7 @@ function App() {
             onClick={(e) => removeColumn(i, j)}
           />
         )}
-      </>
+      </div>
     );
   };
 
@@ -269,6 +270,7 @@ function App() {
             placeholder='1'
             onChange={(e) => handleRate(e.target.value, i, j)}
           />
+          {colButtons(i, j)}
         </div>
       </div>
     );
@@ -286,7 +288,6 @@ function App() {
                   <div className='flex' key={j}>
                     {colsInput(i, j)}
                     {rateInput(i, j)}
-                    {colButtons(i, j)}
                   </div>
                 );
               })}
@@ -327,18 +328,16 @@ function App() {
             Please ensure that the first row of each sheet is the parameters
           </p>
         </>
-        <>
-          <input
-            type='checkbox'
-            className='checkbox'
-            checked={showMarker}
-            onChange={() => setShowMarker(!showMarker)}
-          />
+        <div className='pointer' onClick={() => setShowMarker(!showMarker)}>
+          <input type='checkbox' className='checkbox' checked={showMarker} />
           <label className='checkbox-label'>Show Marker</label>
-        </>
+        </div>
         {sheets.length > 0 && sheetInput}
         {selectedSheet && cols.length > 0 && graphForms}
       </div>
+      {selectedColsList[0][0].length > 0 && (
+        <PDFDownloadButton rootElementId='dfdr-charts' />
+      )}
       {selectedColsList[0][0].length > 0 && (
         <DFDRChart
           time={time}

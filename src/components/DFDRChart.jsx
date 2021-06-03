@@ -9,6 +9,8 @@ function DFDRChart(props) {
   });
 
   const [yAxis, setYAxis] = useState([]);
+  const [selectedPoint, setSelectedPoint] = useState();
+  const [selectedGraph, setSelectedGraph] = useState(1);
 
   const generateID = (id) => {
     return id.toString() + new Date().getTime().toString();
@@ -45,7 +47,6 @@ function DFDRChart(props) {
         id: id,
         group: 'dfdr',
         type: 'line',
-        offsetY: -40 * (id - 1),
         zoom: {
           enabled: true,
           type: 'xy',
@@ -62,9 +63,18 @@ function DFDRChart(props) {
             }
             setYAxis(newYAxis);
           },
-        },
-        toolbar: {
-          show: id === 1,
+          // markerClick: function (
+          //   event,
+          //   chartContext,
+          //   { seriesIndex, dataPointIndex, config }
+          // ) {
+          //   if (selectedGraph !== id) return;
+          //   let i = id - 1;
+          //   let [col, rate] = props.columnsList[i][seriesIndex];
+          //   let xVal = props.time[dataPointIndex * rate];
+          //   let yVal = props.data[dataPointIndex * rate][col];
+          //   setSelectedPoint({ x: xVal, y: yVal });
+          // },
         },
       },
       yaxis: {
@@ -120,10 +130,12 @@ function DFDRChart(props) {
   };
 
   return (
-    <div>
+    <div id='dfdr-charts'>
+      {selectedPoint && <div>x: selectedPoint.x y: selectedPoint.y</div>}
       {props.columnsList.map((columns, i) => {
         return (
           <Chart
+            className='chart'
             key={generateID(i)}
             series={constructSeries(columns)}
             options={constructOptions(i + 1, props.showMarker)}
