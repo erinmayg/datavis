@@ -87,7 +87,8 @@ function App() {
           sheets: sheet,
         });
         const ws = wb.Sheets[sheet];
-        const data = XLSX.utils.sheet_to_json(ws);
+        const data = XLSX.utils.sheet_to_json(ws, { defval: '' });
+        console.log(data[0]);
         resolve(data);
       };
 
@@ -282,7 +283,10 @@ function App() {
         return (
           <div className='flex graphForm--outer' key={i}>
             <div className='graphForm'>
-              <h1>Graph {i + 1}</h1>
+              <h1>
+                Graph {i + 1} {tooltip('Press Ctrl+Click to show table')}
+              </h1>
+
               {lst.map((_, j) => {
                 return (
                   <div className='flex' key={j}>
@@ -329,7 +333,12 @@ function App() {
           </p>
         </>
         <div className='pointer' onClick={() => setShowMarker(!showMarker)}>
-          <input type='checkbox' className='checkbox' checked={showMarker} />
+          <input
+            type='checkbox'
+            className='checkbox'
+            checked={showMarker}
+            readOnly={true}
+          />
           <label className='checkbox-label'>Show Marker</label>
         </div>
         {sheets.length > 0 && sheetInput}
@@ -345,6 +354,7 @@ function App() {
           columnsList={selectedColsList.filter(
             (lst) => lst.filter((cols) => cols.length > 0).length > 0
           )}
+          allColumns={cols}
           showMarker={showMarker}
         />
       )}

@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
+import DFDRTable from './DFDRTable';
 import Chart from 'react-apexcharts';
 import moment from 'moment';
 
 function DFDRChart(props) {
-  const [xAxis, setXAxis] = useState({
-    min: props.time[0],
-    max: props.time[props.time.length - 1],
+  const [xAxis, setXAxis] = useState(() => {
+    return {
+      min: props.time[0],
+      max: props.time[props.time.length - 1],
+    };
   });
 
   const [yAxis, setYAxis] = useState([]);
-  const [selectedPoint, setSelectedPoint] = useState();
   const [selectedGraph, setSelectedGraph] = useState(1);
-
+  const [selectedPoint, setSelectedPoint] = useState();
+  const [selectedRow, setSelectedRow] = useState();
   const generateID = (id) => {
     return id.toString() + new Date().getTime().toString();
   };
@@ -29,7 +32,7 @@ function DFDRChart(props) {
     'palette6',
   ];
 
-  let constructSeries = (columns) =>
+  const constructSeries = (columns) =>
     columns.map((tuple) => {
       const col = tuple[0];
       const rate = tuple[1];
@@ -41,12 +44,18 @@ function DFDRChart(props) {
       };
     });
 
-  const constructOptions = (id, showMarker) => {
+  const constructOptions = (id, showMarker, setSelectedPoint) => {
     return {
       chart: {
         id: id,
         group: 'dfdr',
         type: 'line',
+        animations: {
+          enabled: true,
+          dynamicAnimation: {
+            enabled: false,
+          },
+        },
         zoom: {
           enabled: true,
           type: 'xy',
@@ -63,18 +72,20 @@ function DFDRChart(props) {
             }
             setYAxis(newYAxis);
           },
-          // markerClick: function (
-          //   event,
-          //   chartContext,
-          //   { seriesIndex, dataPointIndex, config }
-          // ) {
-          //   if (selectedGraph !== id) return;
-          //   let i = id - 1;
-          //   let [col, rate] = props.columnsList[i][seriesIndex];
-          //   let xVal = props.time[dataPointIndex * rate];
-          //   let yVal = props.data[dataPointIndex * rate][col];
-          //   setSelectedPoint({ x: xVal, y: yVal });
-          // },
+          markerClick: function (
+            event,
+            chartContext,
+            { seriesIndex, dataPointIndex, config }
+          ) {
+            if (!event.ctrlKey) return;
+            if (selectedGraph !== id) return;
+            let i = id - 1;
+            let [col, rate] = props.columnsList[i][seriesIndex];
+            let row = dataPointIndex * rate;
+            let xVal = props.time[row];
+            let yVal = props.data[row][col];
+            setSelectedPoint(xVal, yVal, row);
+          },
         },
       },
       yaxis: {
@@ -117,10 +128,6 @@ function DFDRChart(props) {
       },
       dataLabels: {
         enabled: false,
-        enabledOnSeries: [0],
-        formatter: function (val, opt) {
-          return props.data[opt.dataPointIndex]['Comments'];
-        },
       },
       markers: {
         size: showMarker ? 2 : 0,
@@ -131,14 +138,33 @@ function DFDRChart(props) {
 
   return (
     <div id='dfdr-charts'>
-      {selectedPoint && <div>x: selectedPoint.x y: selectedPoint.y</div>}
+      {/* {selectedPoint && (
+        <div>
+          Graph: {selectedGraph} x: {selectedPoint.x} y: {selectedPoint.y}
+        </div>
+      )} */}
+      {selectedRow && (
+        <DFDRTable
+          row={selectedRow}
+          data={props.data.filter(
+            (_, i) => i >= selectedRow - 20 && i <= selectedRow + 10
+          )}
+          allColumns={props.allColumns}
+        />
+      )}
       {props.columnsList.map((columns, i) => {
         return (
           <Chart
             className='chart'
             key={generateID(i)}
             series={constructSeries(columns)}
-            options={constructOptions(i + 1, props.showMarker)}
+            options={constructOptions(i + 1, props.showMarker, (x, y, row) => {
+              setSelectedPoint({
+                x: moment(new Date(x)).format('HH:mm:ss'),
+                y: y,
+              });
+              setSelectedRow(row);
+            })}
             height={
               (Math.floor(props.columnsList.length / 4) * 100 + 500) /
               props.columnsList.length

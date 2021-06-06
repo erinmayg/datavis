@@ -70,6 +70,7 @@ label {
   padding: 1rem;
   width: 360px;
   margin-right: 1rem;
+  position: relative;
 
   .rate {
     position: relative;
@@ -139,6 +140,8 @@ label {
     border-radius: 10px;
     position: absolute;
     z-index: 1;
+    font-size: 1rem;
+    font-weight: 400;
   }
 
   &:hover .tooltip-text {
@@ -278,4 +281,10 @@ label {
   .checkbox-label {
     cursor: pointer;
   }
+}
+
+#drdr-charts {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
