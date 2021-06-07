@@ -69,7 +69,7 @@ function DFDRChart(props) {
             let newYAxis = [...yAxis];
             if (yaxis === undefined) {
               newYAxis.fill(undefined);
-            } else {
+            } else if (yaxis.min !== undefined && yaxis.max !== undefined) {
               newYAxis[id - 1] = { min: yaxis[0].min, max: yaxis[0].max };
             }
             setYAxis(newYAxis);
@@ -149,9 +149,9 @@ function DFDRChart(props) {
         <div className='flex center'>
           <DFDRTable
             row={selectedRow}
-            data={props.data.filter(
-              (_, i) => i >= selectedRow - 20 && i <= selectedRow + 10
-            )}
+            data={props.data
+              .slice(props.skipRow)
+              .filter((_, i) => i >= selectedRow - 20 && i <= selectedRow + 10)}
             allColumns={props.allColumns}
           />
           <RemoveButton

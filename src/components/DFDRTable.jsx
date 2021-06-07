@@ -16,7 +16,13 @@ function DFDRTable(props) {
   const constructTableBody = (rows) => (
     <tbody>
       {rows.map((row, i) => (
-        <tr className={i === 20 ? 'highlight' : ''}>
+        <tr
+          className={
+            (props.row < 20 && i === props.row) || (props.row > 20 && i === 20)
+              ? 'highlight'
+              : ''
+          }
+        >
           {Object.values(row).map((data) => (
             <td>
               {data instanceof Date

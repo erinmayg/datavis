@@ -14,6 +14,7 @@ function App() {
 
   const [file, setFile] = useState([]);
   const [sheets, setSheets] = useState([]);
+  const [skipRow, setSkipRow] = useState(0);
   const [selectedSheet, setSelectedSheet] = useState();
   const [cols, setCols] = useState([]);
   const [selectedColsList, setSelectedColsList] = useState([[[]]]);
@@ -87,7 +88,6 @@ function App() {
         });
         const ws = wb.Sheets[sheet];
         const data = XLSX.utils.sheet_to_json(ws, { defval: '' });
-        console.log(data[0]);
         resolve(data);
       };
 
@@ -110,9 +110,41 @@ function App() {
         }
       }
 
-      Object.values(data).forEach((row) => {
-        gmt.push(row[timeIdx]);
-      });
+      let timeArr = Object.values(data).map((row) => row[timeIdx]);
+
+      let skipRow = 0;
+      let setSeconds = true;
+      let sameTime = 0;
+      for (let i = 0; i < timeArr.length; i++) {
+        if (!(timeArr[i] instanceof Date)) {
+          skipRow++;
+          continue;
+        }
+
+        if (i === 0 || !(timeArr[i - 1] instanceof Date)) continue;
+
+        if (timeArr[i].getMinutes() !== timeArr[i - 1].getMinutes()) {
+          break;
+        }
+
+        if (timeArr[i].getSeconds() === timeArr[i - 1].getSeconds()) {
+          sameTime++;
+        } else {
+          setSeconds = false;
+          break;
+        }
+      }
+
+      setSkipRow(skipRow);
+
+      timeArr = setSeconds
+        ? timeArr.map((time, i) => {
+            let secs = (i - skipRow + (60 - sameTime - 1)) % 60;
+            return time instanceof Date ? time.setSeconds(secs) : time;
+          })
+        : timeArr;
+
+      timeArr.forEach((time) => gmt.push(time));
       setTime(gmt);
     });
   };
@@ -129,6 +161,7 @@ function App() {
   };
 
   const handleChooseSheet = (selected) => {
+    setSkipRow(0);
     setSelectedColsList([[[]]]);
     setSelectedSheet(selected.value);
     readCols(selected.value);
@@ -315,6 +348,12 @@ function App() {
               id='file'
               accept={filetypes}
               onChange={(e) => {
+                setSkipRow(0);
+                setSheets([]);
+                setSelectedSheet();
+                setCols([]);
+                setSelectedColsList([[[]]]);
+
                 let file = e.target.files[0];
                 setFile(file);
                 readSheets(file);
@@ -352,6 +391,7 @@ function App() {
           )}
           allColumns={cols}
           showMarker={showMarker}
+          skipRow={skipRow}
         />
       )}
     </div>
