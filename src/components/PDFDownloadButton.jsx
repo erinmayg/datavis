@@ -19,8 +19,8 @@ const GenericPdfDownloader = ({ rootElementId }) => {
   };
 
   return (
-    <div className='flex downloadButton'>
-      <Download onClick={downloadPdfDocument} />
+    <div className='flex downloadButton' onClick={downloadPdfDocument}>
+      <Download />
       Download PDF
     </div>
   );

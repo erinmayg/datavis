@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import DFDRTable from './DFDRTable';
 import Chart from 'react-apexcharts';
 import moment from 'moment';
+import { ReactComponent as RemoveButton } from '../svg/remove.svg';
+import PDFDownloadButton from './PDFDownloadButton';
 
 function DFDRChart(props) {
   const [xAxis, setXAxis] = useState(() => {
@@ -137,41 +139,58 @@ function DFDRChart(props) {
   };
 
   return (
-    <div id='dfdr-charts'>
+    <div>
       {/* {selectedPoint && (
         <div>
           Graph: {selectedGraph} x: {selectedPoint.x} y: {selectedPoint.y}
         </div>
       )} */}
       {selectedRow && (
-        <DFDRTable
-          row={selectedRow}
-          data={props.data.filter(
-            (_, i) => i >= selectedRow - 20 && i <= selectedRow + 10
-          )}
-          allColumns={props.allColumns}
-        />
-      )}
-      {props.columnsList.map((columns, i) => {
-        return (
-          <Chart
-            className='chart'
-            key={generateID(i)}
-            series={constructSeries(columns)}
-            options={constructOptions(i + 1, props.showMarker, (x, y, row) => {
-              setSelectedPoint({
-                x: moment(new Date(x)).format('HH:mm:ss'),
-                y: y,
-              });
-              setSelectedRow(row);
-            })}
-            height={
-              (Math.floor(props.columnsList.length / 4) * 100 + 500) /
-              props.columnsList.length
-            }
+        <div className='flex center'>
+          <DFDRTable
+            row={selectedRow}
+            data={props.data.filter(
+              (_, i) => i >= selectedRow - 20 && i <= selectedRow + 10
+            )}
+            allColumns={props.allColumns}
           />
-        );
-      })}
+          <RemoveButton
+            onClick={() => {
+              setSelectedPoint();
+              setSelectedRow();
+            }}
+          />
+        </div>
+      )}
+      {props.columnsList.length > 0 && (
+        <PDFDownloadButton rootElementId='dfdr-charts' />
+      )}
+      <div id='dfdr-charts'>
+        {props.columnsList.map((columns, i) => {
+          return (
+            <Chart
+              className='chart'
+              key={generateID(i)}
+              series={constructSeries(columns)}
+              options={constructOptions(
+                i + 1,
+                props.showMarker,
+                (x, y, row) => {
+                  setSelectedPoint({
+                    x: moment(new Date(x)).format('HH:mm:ss'),
+                    y: y,
+                  });
+                  setSelectedRow(row);
+                }
+              )}
+              height={
+                (Math.floor(props.columnsList.length / 4) * 100 + 500) /
+                props.columnsList.length
+              }
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }

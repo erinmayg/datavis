@@ -3,7 +3,6 @@ import './App.scss';
 import * as XLSX from 'xlsx';
 import Select from 'react-select';
 import DFDRChart from './components/DFDRChart';
-import PDFDownloadButton from './components/PDFDownloadButton';
 import { ReactComponent as HelpButton } from './svg/help.svg';
 import { ReactComponent as AddButton } from './svg/plus.svg';
 import { ReactComponent as RemoveButton } from './svg/remove.svg';
@@ -344,9 +343,6 @@ function App() {
         {sheets.length > 0 && sheetInput}
         {selectedSheet && cols.length > 0 && graphForms}
       </div>
-      {selectedColsList[0][0].length > 0 && (
-        <PDFDownloadButton rootElementId='dfdr-charts' />
-      )}
       {selectedColsList[0][0].length > 0 && (
         <DFDRChart
           time={time}

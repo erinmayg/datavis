@@ -33,6 +33,17 @@ label {
   align-items: center;
 }
 
+.flex-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.center {
+  justify-content: center;
+}
+
 .select {
   min-width: 150px;
   margin-right: 1rem;
