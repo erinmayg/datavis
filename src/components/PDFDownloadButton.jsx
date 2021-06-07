@@ -11,9 +11,23 @@ const GenericPdfDownloader = ({ rootElementId }) => {
       const pdf = new jsPDF({
         orientation: 'l',
         unit: 'pt',
-        format: [canvas.width, canvas.height],
+        format: [canvas.width, canvas.height + 120],
       });
-      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      pdf.setFont('Helvetica', 'bold');
+      pdf.setFontSize(40);
+      let txtWidth =
+        (pdf.getStringUnitWidth('DFDR Analysis') * pdf.getFontSize()) /
+        pdf.internal.scaleFactor;
+      pdf.text('DFDR Analysis', (canvas.width - txtWidth) / 2, 80);
+      pdf.addImage(
+        imgData,
+        'PNG',
+        0,
+        120,
+        canvas.width,
+        canvas.height,
+        'chart'
+      );
       pdf.save('download.pdf');
     });
   };
