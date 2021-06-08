@@ -3,6 +3,7 @@ import DFDRTable from './DFDRTable';
 import Chart from 'react-apexcharts';
 import moment from 'moment';
 import { ReactComponent as RemoveButton } from '../svg/remove.svg';
+import { ReactComponent as ExpandButton } from '../svg/expand.svg';
 import PDFDownloadButton from './PDFDownloadButton';
 
 function DFDRChart(props) {
@@ -17,6 +18,7 @@ function DFDRChart(props) {
   const [selectedGraph, setSelectedGraph] = useState(1);
   const [selectedPoint, setSelectedPoint] = useState();
   const [selectedRow, setSelectedRow] = useState();
+
   const generateID = (id) => {
     return id.toString() + new Date().getTime().toString();
   };
@@ -168,26 +170,29 @@ function DFDRChart(props) {
       <div id='dfdr-charts'>
         {props.columnsList.map((columns, i) => {
           return (
-            <Chart
-              className='chart'
-              key={generateID(i)}
-              series={constructSeries(columns)}
-              options={constructOptions(
-                i + 1,
-                props.showMarker,
-                (x, y, row) => {
-                  setSelectedPoint({
-                    x: moment(new Date(x)).format('HH:mm:ss'),
-                    y: y,
-                  });
-                  setSelectedRow(row);
-                }
-              )}
-              height={
-                (Math.floor(props.columnsList.length / 4) * 100 + 500) /
-                props.columnsList.length
-              }
-            />
+            <div
+              className='resize'
+              style={{ height: 500 / props.columnsList.length }}
+              onDrag={console.log('i')}
+            >
+              <Chart
+                className='chart'
+                key={generateID(i)}
+                series={constructSeries(columns)}
+                options={constructOptions(
+                  i + 1,
+                  props.showMarker,
+                  (x, y, row) => {
+                    setSelectedPoint({
+                      x: moment(new Date(x)).format('HH:mm:ss'),
+                      y: y,
+                    });
+                    setSelectedRow(row);
+                  }
+                )}
+                height='100%'
+              />
+            </div>
           );
         })}
       </div>

@@ -258,6 +258,33 @@ label {
   margin-top: 1rem;
 }
 
+.resize-wrapper {
+  overflow: hidden;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.resize {
+  overflow: hidden;
+  resize: vertical;
+  position: relative;
+  outline-offset: -1rem;
+  min-height: 200px;
+  max-height: 540px;
+  height: 90%;
+}
+
+.handle {
+  position: absolute;
+  color: grey;
+  width: 2rem;
+  height: auto;
+  bottom: 0px;
+  right: 14px;
+  pointer-events: none;
+  z-index: 2;
+}
+
 .chart {
   margin: -2rem 1rem;
   &:first-of-type {

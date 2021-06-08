@@ -13,7 +13,7 @@ const GenericPdfDownloader = ({ rootElementId }) => {
         unit: 'pt',
         format: [canvas.width, canvas.height + 120],
       });
-      pdf.setFont('Helvetica', 'bold');
+      pdf.setFont('Hevetica', 'bold');
       pdf.setFontSize(40);
       let txtWidth =
         (pdf.getStringUnitWidth('DFDR Analysis') * pdf.getFontSize()) /
