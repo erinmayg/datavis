@@ -18,7 +18,8 @@ function DFDRTable(props) {
       {rows.map((row, i) => (
         <tr
           className={
-            (props.row < 20 && i === props.row) || (props.row > 20 && i === 20)
+            (props.row < props.prior && i === props.row) ||
+            (props.row > props.prior && i === props.prior)
               ? 'highlight'
               : ''
           }

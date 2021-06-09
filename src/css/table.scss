@@ -1,10 +1,11 @@
 .dfdrTable {
+  position: relative;
   max-width: 80%;
   max-height: 400px;
   overflow: auto;
-  margin-bottom: 3rem;
-  position: relative;
-  margin-right: 1rem;
+  margin: 1rem;
+
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 table,

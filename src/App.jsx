@@ -171,14 +171,12 @@ function App() {
   const handleChooseColumn = (selected, i, j) => {
     const colsList = [...selectedColsList];
     colsList[i][j] = [...[selected.value, 1]];
-    console.log(colsList);
     setSelectedColsList(colsList);
   };
 
   const handleRate = (val, i, j) => {
     const colsList = [...selectedColsList];
     colsList[i][j] = [...[colsList[i][j][0], val]];
-    console.log(colsList);
     setSelectedColsList(colsList);
   };
 
@@ -186,14 +184,12 @@ function App() {
     if (selectedColsList[i][j].length === 0) return;
     const colsList = [...selectedColsList];
     colsList[i] = [...colsList[i], []];
-    console.log(colsList);
     setSelectedColsList(colsList);
   };
 
   const removeColumn = (i, j) => {
     const colsList = [...selectedColsList];
     colsList[i].splice(j, 1);
-    console.log(colsList);
     setSelectedColsList(colsList);
   };
 
@@ -316,7 +312,8 @@ function App() {
           <div className='flex graphForm--outer' key={i}>
             <div className='graphForm'>
               <h1>
-                Graph {i + 1} {tooltip('Press Ctrl+Click to show table')}
+                Graph {i + 1}{' '}
+                {i === 0 && tooltip('Press Ctrl+Click to show table')}
               </h1>
 
               {lst.map((_, j) => {

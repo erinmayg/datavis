@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DFDRTable from './DFDRTable';
 import Chart from 'react-apexcharts';
 import moment from 'moment';
@@ -18,6 +18,28 @@ function DFDRChart(props) {
   const [selectedGraph, setSelectedGraph] = useState(1);
   const [selectedPoint, setSelectedPoint] = useState();
   const [selectedRow, setSelectedRow] = useState();
+  const [tableSeconds, setTableSeconds] = useState({ prior: 20, post: 20 });
+  const [tableData, setTableData] = useState(() =>
+    props.data
+      .slice(props.skipRow)
+      .filter(
+        (_, i) =>
+          i >= selectedRow - tableSeconds.prior &&
+          i <= selectedRow + tableSeconds.post
+      )
+  );
+
+  useEffect(() => {
+    setTableData(
+      props.data
+        .slice(props.skipRow)
+        .filter(
+          (_, i) =>
+            i >= selectedRow - tableSeconds.prior &&
+            i <= selectedRow + tableSeconds.post
+        )
+    );
+  }, [props.data, props.skipRow, tableSeconds, selectedRow]);
 
   const generateID = (id) => {
     return id.toString() + new Date().getTime().toString();
@@ -60,6 +82,12 @@ function DFDRChart(props) {
             enabled: false,
           },
         },
+        toolbar: {
+          tools: {
+            zoomin: false,
+            zoomout: false,
+          },
+        },
         zoom: {
           enabled: true,
           type: 'xy',
@@ -71,7 +99,7 @@ function DFDRChart(props) {
             let newYAxis = [...yAxis];
             if (yaxis === undefined) {
               newYAxis.fill(undefined);
-            } else if (yaxis.min !== undefined && yaxis.max !== undefined) {
+            } else {
               newYAxis[id - 1] = { min: yaxis[0].min, max: yaxis[0].max };
             }
             setYAxis(newYAxis);
@@ -142,18 +170,45 @@ function DFDRChart(props) {
 
   return (
     <div>
-      {/* {selectedPoint && (
-        <div>
-          Graph: {selectedGraph} x: {selectedPoint.x} y: {selectedPoint.y}
-        </div>
-      )} */}
       {selectedRow && (
         <div className='flex center'>
+          <div className='tableForm flex-col center'>
+            <input
+              type='number'
+              min='0'
+              max='99'
+              placeholder='0'
+              value={tableSeconds.prior === 0 ? '' : tableSeconds.prior}
+              onChange={(e) => {
+                let newTableSeconds = { ...tableSeconds };
+                newTableSeconds.prior = isNaN(e.target.valueAsNumber)
+                  ? 0
+                  : e.target.valueAsNumber % 100;
+                setTableSeconds(newTableSeconds);
+                e.target.value = e.target.value.slice(0, 2);
+              }}
+            />{' '}
+            seconds prior
+            <input
+              type='number'
+              min='0'
+              max='99'
+              placeholder='0'
+              onChange={(e) => {
+                let newTableSeconds = { ...tableSeconds };
+                newTableSeconds.post = isNaN(e.target.valueAsNumber)
+                  ? 0
+                  : e.target.valueAsNumber % 100;
+                setTableSeconds(newTableSeconds);
+                e.target.value = e.target.value.slice(0, 2);
+              }}
+            />{' '}
+            seconds post
+          </div>
           <DFDRTable
             row={selectedRow}
-            data={props.data
-              .slice(props.skipRow)
-              .filter((_, i) => i >= selectedRow - 20 && i <= selectedRow + 10)}
+            prior={tableSeconds.prior}
+            data={tableData}
             allColumns={props.allColumns}
           />
           <RemoveButton
@@ -173,7 +228,6 @@ function DFDRChart(props) {
             <div
               className='resize'
               style={{ height: 500 / props.columnsList.length }}
-              onDrag={console.log('i')}
             >
               <Chart
                 className='chart'
