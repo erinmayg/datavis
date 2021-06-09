@@ -261,20 +261,13 @@ label {
   margin-top: 1rem;
 }
 
-.resize-wrapper {
-  overflow: hidden;
-  position: relative;
-  padding-bottom: 1rem;
-}
-
 .resize {
   overflow: hidden;
   resize: vertical;
   position: relative;
-  outline-offset: -1rem;
   min-height: 200px;
-  max-height: 540px;
-  height: 90%;
+  max-height: 500px;
+  height: 100%;
 }
 
 .handle {
@@ -323,12 +316,6 @@ label {
   }
 }
 
-#drdr-charts {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .tableForm {
   input {
     position: relative;
@@ -354,3 +341,4 @@ label {
     box-sizing: border-box;
   }
 }
+

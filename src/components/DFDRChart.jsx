@@ -84,8 +84,11 @@ function DFDRChart(props) {
         },
         toolbar: {
           tools: {
+            zoom: id === 1,
             zoomin: false,
             zoomout: false,
+            pan: id === 1,
+            reset: id === 1,
           },
         },
         zoom: {
@@ -194,6 +197,7 @@ function DFDRChart(props) {
               min='0'
               max='99'
               placeholder='0'
+              value={tableSeconds.post === 0 ? '' : tableSeconds.post}
               onChange={(e) => {
                 let newTableSeconds = { ...tableSeconds };
                 newTableSeconds.post = isNaN(e.target.valueAsNumber)
