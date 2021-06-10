@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import DFDRTable from './DFDRTable';
 import Chart from 'react-apexcharts';
+import ApexCharts from 'apexcharts';
 import moment from 'moment';
-import { ReactComponent as RemoveButton } from '../svg/remove.svg';
-import { ReactComponent as ExpandButton } from '../svg/expand.svg';
 import PDFDownloadButton from './PDFDownloadButton';
 
 function DFDRChart(props) {
@@ -18,45 +17,16 @@ function DFDRChart(props) {
   const [selectedGraph, setSelectedGraph] = useState(1);
   const [selectedPoint, setSelectedPoint] = useState();
   const [selectedRow, setSelectedRow] = useState();
-  const [tableSeconds, setTableSeconds] = useState({ prior: 20, post: 20 });
-  const [tableData, setTableData] = useState(() =>
-    props.data
-      .slice(props.skipRow)
-      .filter(
-        (_, i) =>
-          i >= selectedRow - tableSeconds.prior &&
-          i <= selectedRow + tableSeconds.post
-      )
-  );
+  const [height, setHeight] = useState(500 / props.columnsList.length);
 
-  useEffect(() => {
-    setTableData(
-      props.data
-        .slice(props.skipRow)
-        .filter(
-          (_, i) =>
-            i >= selectedRow - tableSeconds.prior &&
-            i <= selectedRow + tableSeconds.post
-        )
-    );
-  }, [props.data, props.skipRow, tableSeconds, selectedRow]);
+  useEffect(
+    () => setHeight(Math.max(200, 500 / props.columnsList.length)),
+    [props.columnsList.length]
+  );
 
   const generateID = (id) => {
     return id.toString() + new Date().getTime().toString();
   };
-
-  let palettes = [
-    'palette1',
-    'palette10',
-    'palette2',
-    'palette9',
-    'palette3',
-    'palette8',
-    'palette4',
-    'palette7',
-    'palette5',
-    'palette6',
-  ];
 
   const constructSeries = (columns) =>
     columns.map((tuple) => {
@@ -70,10 +40,23 @@ function DFDRChart(props) {
       };
     });
 
+  const palettes = [
+    'palette1',
+    'palette10',
+    'palette2',
+    'palette9',
+    'palette3',
+    'palette8',
+    'palette4',
+    'palette7',
+    'palette5',
+    'palette6',
+  ];
+
   const constructOptions = (id, showMarker, setSelectedPoint) => {
     return {
       chart: {
-        id: id,
+        id: 'chart' + id,
         group: 'dfdr',
         type: 'line',
         animations: {
@@ -175,51 +158,13 @@ function DFDRChart(props) {
     <div>
       {selectedRow && (
         <div className='flex center'>
-          <div className='tableForm flex-col center'>
-            <input
-              type='number'
-              min='0'
-              max='99'
-              placeholder='0'
-              value={tableSeconds.prior === 0 ? '' : tableSeconds.prior}
-              onChange={(e) => {
-                let newTableSeconds = { ...tableSeconds };
-                newTableSeconds.prior = isNaN(e.target.valueAsNumber)
-                  ? 0
-                  : e.target.valueAsNumber % 100;
-                setTableSeconds(newTableSeconds);
-                e.target.value = e.target.value.slice(0, 2);
-              }}
-            />{' '}
-            seconds prior
-            <input
-              type='number'
-              min='0'
-              max='99'
-              placeholder='0'
-              value={tableSeconds.post === 0 ? '' : tableSeconds.post}
-              onChange={(e) => {
-                let newTableSeconds = { ...tableSeconds };
-                newTableSeconds.post = isNaN(e.target.valueAsNumber)
-                  ? 0
-                  : e.target.valueAsNumber % 100;
-                setTableSeconds(newTableSeconds);
-                e.target.value = e.target.value.slice(0, 2);
-              }}
-            />{' '}
-            seconds post
-          </div>
           <DFDRTable
             row={selectedRow}
-            prior={tableSeconds.prior}
-            data={tableData}
+            skipRow={props.skipRow}
+            data={props.data}
             allColumns={props.allColumns}
-          />
-          <RemoveButton
-            onClick={() => {
-              setSelectedPoint();
-              setSelectedRow();
-            }}
+            setSelectedPoint={setSelectedPoint}
+            setSelectedRow={setSelectedRow}
           />
         </div>
       )}
@@ -229,10 +174,7 @@ function DFDRChart(props) {
       <div id='dfdr-charts'>
         {props.columnsList.map((columns, i) => {
           return (
-            <div
-              className='resize'
-              style={{ height: 500 / props.columnsList.length }}
-            >
+            <div className='resize' style={{ height: height }}>
               <Chart
                 className='chart'
                 key={generateID(i)}
@@ -242,7 +184,7 @@ function DFDRChart(props) {
                   props.showMarker,
                   (x, y, row) => {
                     setSelectedPoint({
-                      x: moment(new Date(x)).format('HH:mm:ss'),
+                      x: new Date(x).getTime(),
                       y: y,
                     });
                     setSelectedRow(row);

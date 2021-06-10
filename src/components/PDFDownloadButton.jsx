@@ -6,6 +6,7 @@ import { ReactComponent as Download } from '../svg/download.svg';
 const GenericPdfDownloader = ({ rootElementId }) => {
   const downloadPdfDocument = () => {
     const input = document.getElementById(rootElementId);
+
     html2canvas(input).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
@@ -13,12 +14,17 @@ const GenericPdfDownloader = ({ rootElementId }) => {
         unit: 'pt',
         format: [canvas.width, canvas.height + 120],
       });
+
       pdf.setFont('Hevetica', 'bold');
       pdf.setFontSize(40);
+
       let txtWidth =
         (pdf.getStringUnitWidth('DFDR Analysis') * pdf.getFontSize()) /
         pdf.internal.scaleFactor;
-      pdf.text('DFDR Analysis', (canvas.width - txtWidth) / 2, 80);
+
+      let xPosCenter = (canvas.width - txtWidth) / 2;
+
+      pdf.text('DFDR Analysis', xPosCenter, 80);
       pdf.addImage(
         imgData,
         'PNG',
