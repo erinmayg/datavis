@@ -1,27 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import DFDRTable from './DFDRTable';
+import PDFDownloadButton from './PDFDownloadButton';
+import AnnotationsForm from './AnnotationsForm';
 import Chart from 'react-apexcharts';
 import ApexCharts from 'apexcharts';
 import moment from 'moment';
-import PDFDownloadButton from './PDFDownloadButton';
 
 function DFDRChart(props) {
-  const [xAxis, setXAxis] = useState(() => {
-    return {
-      min: props.time[0],
-      max: props.time[props.time.length - 1],
-    };
-  });
-
-  const [yAxis, setYAxis] = useState([]);
   const [selectedGraph, setSelectedGraph] = useState(1);
   const [selectedPoint, setSelectedPoint] = useState();
   const [selectedRow, setSelectedRow] = useState();
   const [height, setHeight] = useState(500 / props.columnsList.length);
+  const [annotations, setAnnotations] = useState([]);
 
   useEffect(
     () => setHeight(Math.max(200, 500 / props.columnsList.length)),
     [props.columnsList.length]
+  );
+
+  useEffect(
+    () =>
+      [...Array(props.columnsList.length + 1).keys()].slice(1).forEach((i) =>
+        ApexCharts.exec('chart' + i, 'updateOptions', {
+          annotations: {
+            points: annotations
+              .filter((a) => a.chartID === i)
+              .map((a) => {
+                return {
+                  x: a.x,
+                  y: a.y,
+                  label: {
+                    text: a.note,
+                    offsetY: -15,
+                    borderRadius: 5,
+                    borderWidth: 2,
+                    style: {
+                      fontSize: '1rem',
+                      padding: {
+                        left: 8,
+                        right: 8,
+                        top: 4,
+                        bottom: 4,
+                      },
+                    },
+                  },
+                  marker: { size: 4 },
+                };
+              }),
+          },
+        })
+      ),
+    [annotations, props.columnsList, selectedRow]
   );
 
   const generateID = (id) => {
@@ -53,21 +82,14 @@ function DFDRChart(props) {
     'palette6',
   ];
 
-  const constructOptions = (id, showMarker, setSelectedPoint) => {
+  const constructOptions = (id, setSelectedPoint) => {
     return {
       chart: {
         id: 'chart' + id,
         group: 'dfdr',
         type: 'line',
-        animations: {
-          enabled: true,
-          dynamicAnimation: {
-            enabled: false,
-          },
-        },
         toolbar: {
           tools: {
-            zoom: id === 1,
             zoomin: false,
             zoomout: false,
             pan: id === 1,
@@ -81,21 +103,27 @@ function DFDRChart(props) {
         },
         events: {
           zoomed: function (chartContext, { xaxis, yaxis }) {
-            setXAxis(xaxis);
-            let newYAxis = [...yAxis];
             if (yaxis === undefined) {
-              newYAxis.fill(undefined);
+              ApexCharts.exec('chart' + id, 'updateOptions', {
+                yaxis: [
+                  {
+                    min: (min) => Math.floor(min / 10) * 10,
+                    max: (max) => Math.ceil(max / 10) * 10,
+                  },
+                ],
+              });
             } else {
-              newYAxis[id - 1] = { min: yaxis[0].min, max: yaxis[0].max };
+              ApexCharts.exec('chart' + id, 'updateOptions', {
+                yaxis: [{ min: yaxis[0].min, max: yaxis[0].max }],
+              });
             }
-            setYAxis(newYAxis);
           },
           markerClick: function (
             event,
             chartContext,
             { seriesIndex, dataPointIndex, config }
           ) {
-            if (!event.ctrlKey) return;
+            if (!event.ctrlKey && !event.altKey) return;
             if (selectedGraph !== id) return;
             let i = id - 1;
             let [col, rate] = props.columnsList[i][seriesIndex];
@@ -112,27 +140,14 @@ function DFDRChart(props) {
           maxWidth: 40,
         },
         decimalsInFloat: 3,
-        min: function (min) {
-          return yAxis[id - 1] === undefined
-            ? Math.floor(min / 10) * 10
-            : yAxis[id - 1].min;
-        },
-        max: function (max) {
-          return yAxis[id - 1] === undefined
-            ? Math.ceil(max / 10) * 10
-            : yAxis[id - 1].max;
-        },
       },
       xaxis: {
         type: 'datetime',
         labels: {
           show: id === props.columnsList.length,
-          formatter: function (val, timestamp) {
-            return moment(new Date(timestamp)).format('HH:mm:ss');
-          },
+          formatter: (val, timestamp) =>
+            moment(new Date(timestamp)).format('HH:mm:ss'),
         },
-        min: xAxis.min,
-        max: xAxis.max,
       },
       legend: {
         show: true,
@@ -144,18 +159,42 @@ function DFDRChart(props) {
       theme: {
         palette: palettes[(id - 1) % 10],
       },
-      dataLabels: {
-        enabled: false,
-      },
       markers: {
-        size: showMarker ? 2 : 0,
+        size: props.showMarker ? 2 : 0,
         strokeWidth: 0,
       },
     };
   };
 
+  const charts = props.columnsList.map((columns, i) => {
+    return (
+      <div className='resize' style={{ height: height }}>
+        <Chart
+          className='chart'
+          key={generateID(i)}
+          series={constructSeries(columns)}
+          options={constructOptions(i + 1, (x, y, row) => {
+            setSelectedPoint({ x: new Date(x).getTime(), y: y });
+            setSelectedRow(row);
+          })}
+          height='100%'
+        />
+      </div>
+    );
+  });
+
   return (
     <div>
+      <AnnotationsForm
+        annotations={annotations}
+        setAnnotations={setAnnotations}
+        countGraph={props.columnsList.length}
+        graph={selectedGraph}
+        setSelectedGraph={setSelectedGraph}
+        row={selectedRow}
+        point={selectedPoint}
+        time={props.time}
+      />
       {selectedRow && (
         <div className='flex center'>
           <DFDRTable
@@ -163,39 +202,17 @@ function DFDRChart(props) {
             skipRow={props.skipRow}
             data={props.data}
             allColumns={props.allColumns}
-            setSelectedPoint={setSelectedPoint}
-            setSelectedRow={setSelectedRow}
+            removeTable={() => {
+              setSelectedPoint();
+              setSelectedRow();
+            }}
           />
         </div>
       )}
       {props.columnsList.length > 0 && (
         <PDFDownloadButton rootElementId='dfdr-charts' />
       )}
-      <div id='dfdr-charts'>
-        {props.columnsList.map((columns, i) => {
-          return (
-            <div className='resize' style={{ height: height }}>
-              <Chart
-                className='chart'
-                key={generateID(i)}
-                series={constructSeries(columns)}
-                options={constructOptions(
-                  i + 1,
-                  props.showMarker,
-                  (x, y, row) => {
-                    setSelectedPoint({
-                      x: new Date(x).getTime(),
-                      y: y,
-                    });
-                    setSelectedRow(row);
-                  }
-                )}
-                height='100%'
-              />
-            </div>
-          );
-        })}
-      </div>
+      <div id='dfdr-charts'>{charts}</div>
     </div>
   );
 }

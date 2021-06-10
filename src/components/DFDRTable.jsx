@@ -104,12 +104,7 @@ function DFDRTable(props) {
         </table>
       </div>
 
-      <RemoveButton
-        onClick={() => {
-          props.setSelectedPoint();
-          props.setSelectedRow();
-        }}
-      />
+      <RemoveButton onClick={() => props.removeTable()} />
     </div>
   );
 }

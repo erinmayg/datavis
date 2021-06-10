@@ -75,7 +75,8 @@ label {
   margin-right: 1rem;
 }
 
-.graphForm {
+.graphForm,
+.annotationsForm {
   background-color: rgba(128, 128, 128, 0.1);
   border: 2px dashed grey;
   border-radius: 20px;
@@ -116,6 +117,66 @@ label {
   h1 {
     font-size: 1.5rem;
     color: grey;
+  }
+}
+
+.annotationsForm {
+  margin: 0rem 1rem;
+  text-align: left;
+  width: max-content;
+
+  .selectGraph,
+  .chartID {
+    width: 5rem;
+  }
+
+  .params {
+    margin-top: 0.5rem;
+    margin-left: 1rem;
+  }
+
+  .input-text {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    background-color: hsl(0, 0%, 100%);
+    border: 1px solid hsl(0, 0%, 80%);
+    border-radius: 4px;
+
+    min-height: 38px;
+    width: 10rem;
+    outline: 0 !important;
+
+    font-family: inherit;
+    font-size: 1.2rem;
+    padding-left: 0.8rem;
+
+    -webkit-transition: all 100ms;
+    transition: all 100ms;
+    box-sizing: border-box;
+
+    margin-right: 1rem;
+  }
+
+  p {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    min-height: 38px;
+    font-family: inherit;
+    font-size: 1.2rem;
+    width: 7rem;
+  }
+
+  .note {
+    width: 10rem;
+    margin-right: 1rem;
   }
 }
 
