@@ -1,25 +1,24 @@
 {
   "files": {
-    "main.css": "/datavis/static/css/main.ff9db30a.chunk.css",
-    "main.js": "/datavis/static/js/main.842485d8.chunk.js",
-    "main.js.map": "/datavis/static/js/main.842485d8.chunk.js.map",
-    "runtime-main.js": "/datavis/static/js/runtime-main.e48b1577.js",
-    "runtime-main.js.map": "/datavis/static/js/runtime-main.e48b1577.js.map",
-    "static/js/2.4e82fecb.chunk.js": "/datavis/static/js/2.4e82fecb.chunk.js",
-    "static/js/2.4e82fecb.chunk.js.map": "/datavis/static/js/2.4e82fecb.chunk.js.map",
-    "static/js/3.5ffa856e.chunk.js": "/datavis/static/js/3.5ffa856e.chunk.js",
-    "static/js/3.5ffa856e.chunk.js.map": "/datavis/static/js/3.5ffa856e.chunk.js.map",
+    "main.css": "/datavis/static/css/main.9f7c35cc.chunk.css",
+    "main.js": "/datavis/static/js/main.5607658d.chunk.js",
+    "main.js.map": "/datavis/static/js/main.5607658d.chunk.js.map",
+    "runtime-main.js": "/datavis/static/js/runtime-main.a2c5df29.js",
+    "runtime-main.js.map": "/datavis/static/js/runtime-main.a2c5df29.js.map",
+    "static/js/2.a4a5de23.chunk.js": "/datavis/static/js/2.a4a5de23.chunk.js",
+    "static/js/2.a4a5de23.chunk.js.map": "/datavis/static/js/2.a4a5de23.chunk.js.map",
+    "static/js/3.099aecaa.chunk.js": "/datavis/static/js/3.099aecaa.chunk.js",
+    "static/js/3.099aecaa.chunk.js.map": "/datavis/static/js/3.099aecaa.chunk.js.map",
     "static/js/4.889f7a76.chunk.js": "/datavis/static/js/4.889f7a76.chunk.js",
     "static/js/4.889f7a76.chunk.js.map": "/datavis/static/js/4.889f7a76.chunk.js.map",
     "static/js/5.8bbce58a.chunk.js": "/datavis/static/js/5.8bbce58a.chunk.js",
     "static/js/5.8bbce58a.chunk.js.map": "/datavis/static/js/5.8bbce58a.chunk.js.map",
     "index.html": "/datavis/index.html",
-    "static/css/main.ff9db30a.chunk.css.map": "/datavis/static/css/main.ff9db30a.chunk.css.map",
-    "static/js/2.4e82fecb.chunk.js.LICENSE.txt": "/datavis/static/js/2.4e82fecb.chunk.js.LICENSE.txt",
-    "static/js/3.5ffa856e.chunk.js.LICENSE.txt": "/datavis/static/js/3.5ffa856e.chunk.js.LICENSE.txt",
+    "static/css/main.9f7c35cc.chunk.css.map": "/datavis/static/css/main.9f7c35cc.chunk.css.map",
+    "static/js/2.a4a5de23.chunk.js.LICENSE.txt": "/datavis/static/js/2.a4a5de23.chunk.js.LICENSE.txt",
+    "static/js/3.099aecaa.chunk.js.LICENSE.txt": "/datavis/static/js/3.099aecaa.chunk.js.LICENSE.txt",
     "static/js/4.889f7a76.chunk.js.LICENSE.txt": "/datavis/static/js/4.889f7a76.chunk.js.LICENSE.txt",
     "static/media/download.9cdcc742.svg": "/datavis/static/media/download.9cdcc742.svg",
-    "static/media/expand.6ee20c18.svg": "/datavis/static/media/expand.6ee20c18.svg",
     "static/media/help.aed9a9a8.svg": "/datavis/static/media/help.aed9a9a8.svg",
     "static/media/plus.8b9b2c39.svg": "/datavis/static/media/plus.8b9b2c39.svg",
     "static/media/plusCol.e833fd5f.svg": "/datavis/static/media/plusCol.e833fd5f.svg",
@@ -27,9 +26,9 @@
     "static/media/removeCol.043fe479.svg": "/datavis/static/media/removeCol.043fe479.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.e48b1577.js",
-    "static/js/3.5ffa856e.chunk.js",
-    "static/css/main.ff9db30a.chunk.css",
-    "static/js/main.842485d8.chunk.js"
+    "static/js/runtime-main.a2c5df29.js",
+    "static/js/3.099aecaa.chunk.js",
+    "static/css/main.9f7c35cc.chunk.css",
+    "static/js/main.5607658d.chunk.js"
   ]
 }
