@@ -15,6 +15,7 @@ function UserInput(props) {
   const [sheets, setSheets] = useState([]);
 
   const readSheets = (file) => {
+    if (file === undefined) return;
     const promise = new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsArrayBuffer(file);
@@ -23,8 +24,8 @@ function UserInput(props) {
         const bufferArray = e.target.result;
         const wb = XLSX.read(bufferArray, {
           type: 'buffer',
-          sheets: 0,
           sheetRows: 1,
+          bookShets: true,
         });
         resolve(wb.SheetNames);
       };
@@ -74,10 +75,17 @@ function UserInput(props) {
         const wb = XLSX.read(bufferArray, {
           type: 'buffer',
           cellDates: true,
+          cellStyles: true,
           sheets: sheet,
         });
         const ws = wb.Sheets[sheet];
-        const data = XLSX.utils.sheet_to_json(ws, { defval: '' });
+        const rowProps = ws['!rows'];
+        let data = XLSX.utils.sheet_to_json(ws, { defval: '' });
+        data = data.filter(
+          (_, i) =>
+            rowProps[(i + 1).toString()] === undefined ||
+            !rowProps[(i + 1).toString()].hidden
+        );
         resolve(data);
       };
 
@@ -100,11 +108,7 @@ function UserInput(props) {
 
       /* Set x-axis as 1 to n if time column does not exists */
       if (timeIdx === '') {
-        props.setTime([
-          ...Array(props.data.length + 1)
-            .keys()
-            .slice(1),
-        ]);
+        props.setTime([...Array(data.length + 1).keys()].slice(1));
         return;
       }
 
@@ -351,7 +355,9 @@ function UserInput(props) {
           />
           <span className='file-custom'>
             <span className='filename'>
-              {file.length === 0 ? 'Choose .xlsx file...' : file.name}
+              {file === undefined || file.length === 0
+                ? 'Choose .xlsx file...'
+                : file.name}
             </span>
             <span className='browse'>Browse</span>
           </span>

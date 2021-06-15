@@ -36,7 +36,7 @@ function AnnotationsForm(props) {
   };
 
   const annotation = (i) => (
-    <div className='flex'>
+    <div className='flex' key={i}>
       <div className='params'>
         {i === 0 && <label>Graph:</label>}
         {i === props.annotations.length ? (
@@ -58,9 +58,13 @@ function AnnotationsForm(props) {
         <p>
           {i === props.annotations.length
             ? props.point
-              ? moment(new Date(props.point.x)).format('HH:mm:ss')
+              ? props.isDate
+                ? moment(new Date(props.point.x)).format('HH:mm:ss')
+                : props.point.x
               : 'undefined'
-            : moment(new Date(props.annotations[i].x)).format('HH:mm:ss')}
+            : props.isDate
+            ? moment(new Date(props.annotations[i].x)).format('HH:mm:ss')
+            : props.annotations[i].x}
         </p>
       </div>
       <div className='params'>
@@ -98,7 +102,7 @@ function AnnotationsForm(props) {
 
   return (
     <div className='annotationsForm form'>
-      <h1>Annotations {tooltip('Press Alt+Click to choose point')}</h1>
+      <h1>Annotations {tooltip('Press Ctrl+Click to choose point')}</h1>
       {[...Array(props.annotations.length + 1).keys()].map((i) =>
         annotation(i)
       )}

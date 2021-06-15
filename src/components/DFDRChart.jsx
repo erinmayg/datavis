@@ -82,7 +82,7 @@ function DFDRChart(props) {
     'palette6',
   ];
 
-  const constructOptions = (id, setSelectedPoint) => {
+  const constructOptions = (id, isDate, setSelectedPoint) => {
     return {
       chart: {
         id: 'chart' + id,
@@ -142,11 +142,11 @@ function DFDRChart(props) {
         decimalsInFloat: 3,
       },
       xaxis: {
-        type: 'datetime',
+        type: isDate ? 'datetime' : 'numeric',
         labels: {
           show: id === props.columnsList.length,
           formatter: (val, timestamp) =>
-            moment(new Date(timestamp)).format('HH:mm:ss'),
+            isDate ? moment(new Date(timestamp)).format('HH:mm:ss') : val,
         },
       },
       legend: {
@@ -168,15 +168,22 @@ function DFDRChart(props) {
 
   const charts = props.columnsList.map((columns, i) => {
     return (
-      <div className='resize' style={{ height: height }}>
+      <div className='resize' style={{ height: height }} key={i}>
         <Chart
           className='chart'
           key={generateID(i)}
           series={constructSeries(columns)}
-          options={constructOptions(i + 1, (x, y, row) => {
-            setSelectedPoint({ x: new Date(x).getTime(), y: y });
-            setSelectedRow(row);
-          })}
+          options={constructOptions(
+            i + 1,
+            props.time[5] instanceof Date,
+            (x, y, row) => {
+              setSelectedPoint({
+                x: props.time[5] instanceof Date ? new Date(x).getTime() : x,
+                y: y,
+              });
+              setSelectedRow(row);
+            }
+          )}
           height='100%'
         />
       </div>
@@ -194,6 +201,7 @@ function DFDRChart(props) {
         row={selectedRow}
         point={selectedPoint}
         time={props.time}
+        isDate={props.time[5] instanceof Date}
       />
       {selectedRow && (
         <div className='flex center'>
