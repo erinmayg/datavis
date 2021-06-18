@@ -61,12 +61,16 @@ function DFDRChart(props) {
     columns.map((tuple) => {
       const col = tuple[0];
       const rate = tuple[1];
-      return {
+      let series = {
         name: col,
         data: props.time
           .map((t, i) => [t, props.data[i][col]])
-          .filter((data, i) => i % rate === 0 && !isNaN(data[1])),
+          .filter(
+            (data, i) => i % rate === 0 && data[1] !== '' && !isNaN(data[1])
+          ),
       };
+      console.log(series);
+      return series;
     });
 
   const palettes = [
@@ -154,6 +158,7 @@ function DFDRChart(props) {
         showForSingleSeries: true,
       },
       stroke: {
+        show: true,
         width: 1,
       },
       theme: {

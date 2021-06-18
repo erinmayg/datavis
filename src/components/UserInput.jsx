@@ -81,11 +81,13 @@ function UserInput(props) {
         const ws = wb.Sheets[sheet];
         const rowProps = ws['!rows'];
         let data = XLSX.utils.sheet_to_json(ws, { defval: '' });
-        data = data.filter(
-          (_, i) =>
-            rowProps[(i + 1).toString()] === undefined ||
-            !rowProps[(i + 1).toString()].hidden
-        );
+        if (rowProps !== undefined) {
+          data = data.filter(
+            (_, i) =>
+              rowProps[(i + 1).toString()] === undefined ||
+              !rowProps[(i + 1).toString()].hidden
+          );
+        }
         resolve(data);
       };
 
