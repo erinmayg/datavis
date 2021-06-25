@@ -11,6 +11,7 @@ function DFDRChart(props) {
   const [selectedPoint, setSelectedPoint] = useState();
   const [selectedRow, setSelectedRow] = useState();
   const [height, setHeight] = useState(500 / props.columnsList.length);
+  const [showTable, setShowTable] = useState(false);
   const [annotations, setAnnotations] = useState([]);
 
   useEffect(
@@ -50,7 +51,7 @@ function DFDRChart(props) {
           },
         })
       ),
-    [annotations, props.columnsList, selectedRow]
+    [annotations, props.columnsList, selectedRow, showTable]
   );
 
   const generateID = (id) => {
@@ -113,6 +114,11 @@ function DFDRChart(props) {
                   {
                     min: (min) => Math.floor(min / 10) * 10,
                     max: (max) => Math.ceil(max / 10) * 10,
+                    labels: {
+                      minWidth: 40,
+                      maxWidth: 40,
+                    },
+                    decimalsInFloat: 3,
                   },
                 ],
               });
@@ -135,6 +141,7 @@ function DFDRChart(props) {
             let xVal = props.time[row];
             let yVal = props.data[row][col];
             setSelectedPoint(xVal, yVal, row);
+            if (event.ctrlKey) setShowTable(true);
           },
         },
       },
@@ -150,7 +157,9 @@ function DFDRChart(props) {
         labels: {
           show: id === props.columnsList.length,
           formatter: (val, timestamp) =>
-            isDate ? moment(new Date(timestamp)).format('HH:mm:ss') : val,
+            isDate
+              ? moment(new Date(timestamp)).format('HH:mm:ss')
+              : Math.round(val),
         },
       },
       legend: {
@@ -208,17 +217,14 @@ function DFDRChart(props) {
         time={props.time}
         isDate={props.time[5] instanceof Date}
       />
-      {selectedRow && (
-        <div className='flex center'>
+      {showTable && (
+        <div className={'flex center'}>
           <DFDRTable
             row={selectedRow}
             skipRow={props.skipRow}
             data={props.data}
             allColumns={props.allColumns}
-            removeTable={() => {
-              setSelectedPoint();
-              setSelectedRow();
-            }}
+            removeTable={() => setShowTable(false)}
           />
         </div>
       )}

@@ -13,7 +13,7 @@ function AnnotationsForm(props) {
     let newAnnotations = [...props.annotations];
     newAnnotations.push({
       chartID: props.graph,
-      x: props.time[props.row].getTime(),
+      x: props.isDate ? props.time[props.row].getTime() : props.time[props.row],
       y: props.point.y,
       note: note,
     });
@@ -102,7 +102,7 @@ function AnnotationsForm(props) {
 
   return (
     <div className='annotationsForm form'>
-      <h1>Annotations {tooltip('Press Ctrl+Click to choose point')}</h1>
+      <h1>Annotations {tooltip('Press Alt+Click to choose a point')}</h1>
       {[...Array(props.annotations.length + 1).keys()].map((i) =>
         annotation(i)
       )}
