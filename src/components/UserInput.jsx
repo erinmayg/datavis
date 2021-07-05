@@ -102,7 +102,10 @@ function UserInput(props) {
       /* Find time column */
       let timeIdx = '';
       for (let key in data[5]) {
-        if (data[5][key] instanceof Date) {
+        if (
+          data[5][key] instanceof Date ||
+          data[5][key].toString().includes(':')
+        ) {
           timeIdx = key;
           break;
         }
@@ -112,20 +115,38 @@ function UserInput(props) {
       if (timeIdx === '') {
         props.setTime([...Array(data.length + 1).keys()].slice(1));
         return;
+      } else if (!(data[5][timeIdx] instanceof Date)) {
+        data = data.map((row) => {
+          let [hour, minutes, seconds] = row[timeIdx]
+            .substring(0, 8)
+            .split(':');
+          let date = new Date();
+          date.setHours(hour);
+          date.setMinutes(minutes);
+          date.setSeconds(seconds);
+          row[timeIdx] = date;
+          return row;
+        });
       }
 
       let timeArr = Object.values(data).map((row) => row[timeIdx]);
+      console.log(timeArr);
 
       let skipRow = 0;
       let isSameSeconds = true;
       let countFirstSameTime = 0;
       for (let i = 0; i < timeArr.length; i++) {
-        if (!(timeArr[i] instanceof Date)) {
+        if (!(timeArr[i] instanceof Date) || isNaN(timeArr[i].getTime())) {
           skipRow++;
           continue;
         }
 
-        if (i === 0 || !(timeArr[i - 1] instanceof Date)) continue;
+        if (
+          i === 0 ||
+          !(timeArr[i - 1] instanceof Date) ||
+          isNaN(timeArr[i - 1].getTime())
+        )
+          continue;
 
         if (timeArr[i].getMinutes() !== timeArr[i - 1].getMinutes()) {
           break;
