@@ -7,15 +7,14 @@ const GenericPdfDownloader = ({ rootElementId }) => {
   const downloadPdfDocument = () => {
     const input = document.getElementById(rootElementId);
 
-    html2canvas(input).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
+    html2canvas(input, { scale: 3 }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png', 4);
       const pdf = new jsPDF({
         orientation: 'l',
         unit: 'pt',
         format: [canvas.width, canvas.height + 120],
       });
 
-      pdf.setFont('Hevetica', 'bold');
       pdf.setFontSize(40);
 
       let txtWidth =
@@ -34,6 +33,7 @@ const GenericPdfDownloader = ({ rootElementId }) => {
         canvas.height,
         'chart'
       );
+      // pdf.html(input).then(() => pdf.save('download.pdf'));
       pdf.save('download.pdf');
     });
   };
