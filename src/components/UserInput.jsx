@@ -169,6 +169,20 @@ function UserInput(props) {
           })
         : timeArr;
 
+      // Handle midnight values
+      for (let i = 1; i < timeArr.length; i++) {
+        if (
+          !(timeArr[i] instanceof Date) ||
+          !(timeArr[i - 1] instanceof Date)
+        ) {
+          continue;
+        }
+
+        if (timeArr[i] < timeArr[i - 1]) {
+          timeArr[i].setDate(timeArr[i].getDate() + 1);
+        }
+      }
+
       props.setTime(timeArr);
     });
   };
