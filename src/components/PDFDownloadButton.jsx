@@ -15,7 +15,7 @@ const GenericPdfDownloader = ({ rootElementId }) => {
         format: [canvas.width, canvas.height + 120],
       });
 
-      pdf.setFontSize(40);
+      pdf.setFontSize(60);
 
       let txtWidth =
         (pdf.getStringUnitWidth('DFDR Analysis') * pdf.getFontSize()) /
@@ -24,6 +24,7 @@ const GenericPdfDownloader = ({ rootElementId }) => {
       let xPosCenter = (canvas.width - txtWidth) / 2;
 
       pdf.text('DFDR Analysis', xPosCenter, 80);
+
       pdf.addImage(
         imgData,
         'PNG',
@@ -33,7 +34,7 @@ const GenericPdfDownloader = ({ rootElementId }) => {
         canvas.height,
         'chart'
       );
-      // pdf.html(input).then(() => pdf.save('download.pdf'));
+
       pdf.save('download.pdf');
     });
   };

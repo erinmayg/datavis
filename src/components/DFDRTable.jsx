@@ -3,8 +3,13 @@ import moment from 'moment';
 import '../css/table.scss';
 import { ReactComponent as RemoveButton } from '../svg/remove.svg';
 
+// The Preview Table, appears when a data point is selected
 function DFDRTable(props) {
+  /* States */
+
+  // The number of rows to display before and after the selected data point
   const [tableSeconds, setTableSeconds] = useState({ prior: 20, post: 20 });
+  // The data (rows) to display on the Preview Table
   const [tableData, setTableData] = useState(() =>
     props.data
       .slice(props.skipRow)
@@ -14,6 +19,8 @@ function DFDRTable(props) {
           i <= props.row + tableSeconds.post
       )
   );
+
+  /* Use Effects */
 
   useEffect(() => {
     setTableData(
@@ -26,6 +33,8 @@ function DFDRTable(props) {
         )
     );
   }, [props.data, props.skipRow, tableSeconds, props.row]);
+
+  /* Functions and Components */
 
   const constructHeader = (
     <thead>

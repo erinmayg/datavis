@@ -5,9 +5,16 @@ import { ReactComponent as HelpButton } from '../svg/help.svg';
 import { ReactComponent as AddButton } from '../svg/plusCol.svg';
 import { ReactComponent as RemoveButton } from '../svg/removeCol.svg';
 
+// The Annotation Form for the Graphs
 function AnnotationsForm(props) {
+  /* States */
+
+  // The current annotation
   const [note, setNotes] = useState('');
 
+  /* Functions */
+
+  // Adds an annotation to the selected graph
   const addAnnotation = () => {
     if (props.point === undefined || note === '') return;
     let newAnnotations = [...props.annotations];
@@ -20,11 +27,14 @@ function AnnotationsForm(props) {
     props.setAnnotations(newAnnotations);
   };
 
+  // Removes an annotation from the selected graph
   const removeAnnotation = (i) => {
     let newAnnotations = [...props.annotations];
     newAnnotations.splice(i, 1);
     props.setAnnotations(newAnnotations);
   };
+
+  /* Components */
 
   const tooltip = (tip) => {
     return (

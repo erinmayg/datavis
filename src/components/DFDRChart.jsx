@@ -6,13 +6,23 @@ import Chart from 'react-apexcharts';
 import ApexCharts from 'apexcharts';
 import moment from 'moment';
 
+// Displays the graphs once the User Input is filled
 function DFDRChart(props) {
+
+  /* States */
+
+  // the graph selected for annotation
   const [selectedGraph, setSelectedGraph] = useState(1);
+  // the point selected for annotation
   const [selectedPoint, setSelectedPoint] = useState();
+  // the row selected to display the Preview Table
   const [selectedRow, setSelectedRow] = useState();
+  // the default height of the graph
   const [height, setHeight] = useState(500 / props.columnsList.length);
   const [showTable, setShowTable] = useState(false);
   const [annotations, setAnnotations] = useState([]);
+
+  /* Use Effects */
 
   useEffect(
     () => setHeight(Math.max(200, 500 / props.columnsList.length)),
@@ -54,10 +64,14 @@ function DFDRChart(props) {
     [annotations, props.columnsList, selectedRow, showTable]
   );
 
+  /* Functions */
+
+  // Generates a unique ID for each of the graph
   const generateID = (id) => {
     return id.toString() + new Date().getTime().toString();
   };
 
+  // Constructs a series for the graph to read
   const constructSeries = (columns) =>
     columns.map((tuple) => {
       const col = tuple[0];
@@ -87,6 +101,7 @@ function DFDRChart(props) {
     'palette6',
   ];
 
+  // Constructs the default graph settings
   const constructOptions = (id, isDate, setSelectedPoint) => {
     return {
       chart: {
@@ -165,6 +180,7 @@ function DFDRChart(props) {
       legend: {
         show: true,
         showForSingleSeries: true,
+        fontSize: '16pt',
       },
       stroke: {
         show: true,
@@ -180,6 +196,7 @@ function DFDRChart(props) {
     };
   };
 
+  // Constructs the graph based on the given series and default settings
   const charts = props.columnsList.map((columns, i) => {
     return (
       <div className='resize' style={{ height: height }} key={i}>

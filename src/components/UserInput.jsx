@@ -7,13 +7,27 @@ import { ReactComponent as RemoveButton } from '../svg/remove.svg';
 import { ReactComponent as AddColButton } from '../svg/plusCol.svg';
 import { ReactComponent as RemoveColButton } from '../svg/removeCol.svg';
 
+
+/* Contains all the inputs that the user needs to fill in
+   i.e. File picker, Sheet selector, Graph forms
+*/
 function UserInput(props) {
+
+  // the type of files that to parse
   const filetypes = '.xls, .xlsx';
 
+  /* States */
+
+  // the selected sheet
   const [selectedSheet, setSelectedSheet] = useState();
+  // the file to parse
   const [file, setFile] = useState([]);
+  // the sheets available in the Excel file
   const [sheets, setSheets] = useState([]);
 
+  /* Functions */
+
+  // Parses the excel file and reads all available sheets
   const readSheets = (file) => {
     if (file === undefined) return;
     const promise = new Promise((resolve, reject) => {
@@ -38,6 +52,7 @@ function UserInput(props) {
     promise.then((sheets) => setSheets(sheets));
   };
 
+  // Once a sheet is selected, reads all the parameters in the header row (first row)
   const readCols = (sheet) => {
     const promise = new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -65,6 +80,7 @@ function UserInput(props) {
     );
   };
 
+  // Reads all the rows in the selected sheet
   const readSheet = (sheet) => {
     const promise = new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -99,7 +115,7 @@ function UserInput(props) {
     promise.then((data) => {
       props.setData(data);
 
-      /* Find time column */
+      // Find time column
       let timeIdx = '';
       for (let key in data[5]) {
         if (
@@ -111,7 +127,7 @@ function UserInput(props) {
         }
       }
 
-      /* Set x-axis as 1 to n if time column does not exists */
+      // Set x-axis as 1 to n if time column does not exists
       if (timeIdx === '') {
         props.setTime([...Array(data.length + 1).keys()].slice(1));
         return;
@@ -169,7 +185,7 @@ function UserInput(props) {
           })
         : timeArr;
 
-      // Handle midnight values
+      // Handle midnight values, i.e. if the time value spans over one day
       for (let i = 1; i < timeArr.length; i++) {
         if (
           !(timeArr[i] instanceof Date) ||
@@ -186,6 +202,8 @@ function UserInput(props) {
       props.setTime(timeArr);
     });
   };
+
+  /* Components */
 
   const addColumnsList = (i) => {
     if (props.selectedColsList[i][0].length === 0) return;
