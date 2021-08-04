@@ -29,7 +29,7 @@ More info regarding forking a repository can be obtained [here](https://docs.git
 
 ### Step 2: Installing the necessary tools
 
-1. Install the LTS release of [Node.js 12](https://nodejs.org/en/blog/release/v12.13.0/).
+1. Install the LTS release of [Node 12](https://nodejs.org/en/blog/release/v12.13.0/).
 1. Install yarn via npm package manager by opening the terminal and typing in:
      ```
      npm install --global yarn
